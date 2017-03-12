@@ -118,6 +118,26 @@ monta_titulo_secao("Cadastro de Mala Direta");
 						</td>
 						<td width="5%" align="right"><a href="javascript: cal1.popup();"><img src="imagens/cal.gif" border="0" alt="Clique aqui para escolher a data de nascimento"></a></td>
 					</tr>
+					<?
+					if($modo == "update"){ ?>
+					<tr>
+						<td class="label"></td>
+						<td class="label">
+							<fieldset>
+								<legend><b>Status da Mala Direta</b></legend>
+								<table width="100%">
+									<tr>
+										<td width="40%" class="label">Agendada para envio</td>
+										<td><input type="radio" name="status_mala" value="1"<? if ($status_mala == "1") echo(" checked");?>></td>
+										<td width="10%">&nbsp;</td>
+										<td width="40%" class="label">Enviada</td>
+										<td><input type="radio" name="status_mala" value="2"<? if(($status_mala == "2") || ($modo == "add")) echo(" checked");?>></td>
+									</tr>
+								</table>
+							</fieldset>
+						</td>
+					</tr>
+					<? } ?>
 					<tr>
 						<td colspan="3">
 							<hr>
@@ -127,7 +147,7 @@ monta_titulo_secao("Cadastro de Mala Direta");
 						<td colspan="3" class="label" style="text-align: left;">Editor HTML Online</td>
 					</tr>
 					<tr>
-						<td colspan="3"><iframe width="100%" height="400" src="editor.php?var=html_mala" name="editor" id="editor"></iframe></td>
+						<td colspan="3"><iframe width="100%" height="400" src="../editor.php?var=html_mala" name="editor" id="editor"></iframe></td>
 					</tr>
 				</table>
 			<? termina_quadro_branco(); ?>
@@ -169,8 +189,12 @@ monta_titulo_secao("Cadastro de Mala Direta");
 			<? inicia_quadro_branco('width="100%"', "Grava Informações"); ?>
 			<table width="100%">
 				<tr>
-					<td align="right"><?
-						if($modo == "update") echo('<input type="button" value="Apagar" class="botao_aqua" onclick="self.location=\'salva_mala.php?modo=apagar&id_mala=' . $id_mala . '\'">');
+					<td align="right">
+						<?
+						if($modo == "update"){
+							echo('<input type="button" value="Pré-Visualizar" class="botao_aqua" onClick="window.open(\'previsualizar.php?tipo=mala&id=' . $id_mala . '\');">&nbsp;');
+							echo('<input type="button" value="Apagar" class="botao_aqua" onclick="self.location=\'salva_mala.php?modo=apagar&id_mala=' . $id_mala . '\'">');
+						}
 						elseif ($modo == "add") echo('<input type="reset" value="Limpar Campos" class="botao_aqua">');
 						?>&nbsp;<input type="submit" value="Salvar" class="botao_aqua">
 					</td>
@@ -191,6 +215,9 @@ monta_titulo_secao("Cadastro de Mala Direta");
 				<hr>
 				<img align="absmiddle" src="imagens/atencao.gif">
 				&nbsp;Para ser possível o envio de emails personalizados, com o nome do destinatário, será necessário a inclusão da palavra chave <font color="#FF0000">(*nome*)</font> dentro do corpo da mensagem toda a vez que desejar se referir ao nome do destinatário. O sistema então, automaticamente, substituirá o a palavra chave pelo nome de cada destinatário do email.
+				<hr>
+				<img align="absmiddle" src="imagens/atencao.gif">
+				&nbsp;Para escolher onde será criada a tabela dinâmica de oferecimento de outras familias de produtos deve-se incluir no texto a palavra chave <font color="#FF0000">(*dispomos_tambem*)</font>.
 				<hr><br><br><br>
 				<center>
 					<table width="80%">
@@ -214,10 +241,16 @@ monta_titulo_secao("Cadastro de Mala Direta");
 	</tr>
 </table>
 <script language="javascript">
-	document.forms[0].elements[0].focus();
-	setTimeout('aplicar_estilo();', 1000);
+	var i = setInterval(espera, 1000);	
+	function espera(){
+		if(self.editor.document.readyState == "complete"){
+			aplicar_estilo();
+			clearInterval(i);
+		}
+	}
 	var cal1 = new calendar1(document.forms[0].elements['data_mala']);
 	cal1.year_scroll = true;
 	cal1.time_comp = false;
+	document.forms[0].elements[0].focus();
 </script>
 <? termina_pagina(); ?>

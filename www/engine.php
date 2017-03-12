@@ -12,7 +12,7 @@ if(mysql_num_rows($result2)>0){
 	while($registro2 = mysql_fetch_assoc($result2)){
 		$id_mala = $registro2["id_mala"];
 		
-		$query = "SELECT DISTINCT(id_pessoa), nome_pessoa, email_pessoa FROM pessoas p, instituicoes i, segmentos s, segmentos_malas sm, segmentos_instituicoes si  WHERE p.id_instituicao = i.id_instituicao AND i.id_instituicao = si.id_instituicao AND s.id_segmento=si.id_segmento  AND sm.id_segmento=si.id_segmento AND p.recebe_email_pessoa = 's' AND id_mala = " . $id_mala;
+		$query = "SELECT DISTINCT(id_pessoa), nome_pessoa, email_pessoa FROM pessoas p, instituicoes i, segmentos s, segmentos_malas sm, segmentos_instituicoes si  WHERE p.id_instituicao = i.id_instituicao AND i.id_instituicao = si.id_instituicao AND s.id_segmento=si.id_segmento  AND sm.id_segmento=si.id_segmento AND p.recebe_email_pessoa = 's' AND p.id_instituicao != 0 AND id_mala = " . $id_mala;
 		$result = mysql_query($query); 
 		while($registro = mysql_fetch_assoc($result)){
 			manda_email($id_mala, $registro["id_pessoa"], $registro["nome_pessoa"], $registro["email_pessoa"]);
@@ -34,12 +34,13 @@ if(mysql_num_rows($result2)>0){
 
 ##########################################################################################################################
 # CONSULTA PARA ENCONTRAR OS ANIVERSARIANTES DO DIA CORRENTE E ENVIAR O EMAIL DE PARABÉNS
+
 if(retorna_config("data_envio_aniversario") != date("d/m/Y")){
-	$query = "SELECT id_pessoa, nome_pessoa, email_pessoa FROM pessoas WHERE DAYOFMONTH(dt_nascimento_pessoa) = DAYOFMONTH(CURDATE()) AND MONTH(dt_nascimento_pessoa) = MONTH(CURDATE())";
+	$query = "SELECT DISTINCT(id_pessoa), nome_pessoa, email_pessoa FROM pessoas WHERE DAYOFMONTH(dt_nascimento_pessoa) = DAYOFMONTH(CURDATE()) AND MONTH(dt_nascimento_pessoa) = MONTH(CURDATE())";
 	$result = mysql_query($query);
 	if(mysql_num_rows($result)>0){
 		while($registro = mysql_fetch_assoc($result)){
-			manda_email_aniversariante($id_mala, $registro["id_pessoa"], $registro["nome_pessoa"], $registro["email_pessoa"]);
+			manda_email_aniversariante($registro["id_pessoa"], $registro["nome_pessoa"], $registro["email_pessoa"]);
 		}
 		altera_valor("data_envio_aniversario", date("d/m/Y"));
 	}
@@ -55,6 +56,7 @@ function manda_email($id_mala, $id_pessoa, $nome_pessoa, $email_pessoa){
 	$css_mala = stripslashes($registro["css_mala"]);
 	$assunto = $registro["assunto_mala"];
 	$html_mala = str_replace("(*nome*)", $nome_pessoa, stripslashes($registro["html_mala"]));
+	$html_mala = str_replace("(*dispomos_tambem*)", mostra_familias(), $html_mala);
 	$ENTER = chr(10);
 	$HTML = '<html>' . $ENTER;
 	$HTML .= '<head>' . $ENTER;
@@ -65,15 +67,26 @@ function manda_email($id_mala, $id_pessoa, $nome_pessoa, $email_pessoa){
 	$HTML .= '--></style>' . $ENTER;
 	$HTML .= '<body>' . $ENTER;
 	$HTML .= $html_mala . $ENTER;
-	$HTML .= '<center><p>Caso não queira mais receber este boletim eletrônico clique <a href="' . retorna_config('url_site') . '/reacher/remove_lista.php?id=' . $id_pessoa . '&p=' . base64_encode($nome_pessoa) . '">aqui</a>.</p></center><BR><BR>' . $ENTER;
+	$HTML .= '<br><br><br><center><a href="' . retorna_config('url_site') . '/reacher/remove_lista.php?id=' . $id_pessoa . '&p=' . base64_encode($nome_pessoa) . '"><img border="0" src="' . retorna_config('url_site') . '/reacher/imagens/remover.gif"></a></center><BR><BR>' . $ENTER;
 	$HTML .= '</body>' . $ENTER;
 	$HTML .= '</html>' . $ENTER;
 
 	$headers  = "MIME-Version: 1.0\n";
-	$headers .= "Content-type: text/html; charset=iso-8859-1\n";
-	$headers .= "To: " . $nome_pessoa . " <" . $email_pessoa . ">\n";
+	//$headers .= "To: " . $nome_pessoa . " <" . $email_pessoa . ">\n";
 	$headers .= "From: " . retorna_config('remetente') . " <" . retorna_config("email_remetente") . ">\n";
-		
+	$headers .= "X-Sender: <" . retorna_config("email_remetente") . ">\n";
+	$headers .= "Return-Path: " . retorna_config("email_remetente") . "\n";
+	$headers .= "Errors-To: <" . retorna_config("email_remetente") . ">\n";
+	$headers .= "Message-Id: <".md5(uniqid(rand())).".".preg_replace("/[^a-z0-9]/i", "", retorna_config('remetente'))."@locaweb.com.br>\n";
+	$headers .= "Date: " . date("D, j M Y H:i:s -0300") . "\n";
+	$headers .= "X-Priority: 3 (Normal)\n";
+	$headers .= "X-MSMail-Priority: Normal\n";
+	$headers .= "Content-type: text/html; charset=iso-8859-1\n";
+	$headers .= "X-Mailer: Reacher WebMailer, Build by Leonardo Lima de Vasconcellos on 12.09.2005\n";
+	$headers .= "Importance: Normal\n";
+	$headers .= "Content-type: text/html; charset=iso-8859-1\n";
+
+	ini_set(sendmail_from, retorna_config("email_remetente"));
 	mail($email_pessoa, $assunto, $HTML, $headers);
 }
 
@@ -88,6 +101,7 @@ function manda_email_aniversariante($id_pessoa, $nome_pessoa, $email_pessoa){
 	$css_mala = stripslashes($registro["css_modelo"]);
 	$assunto = retorna_config("assunto_email_aniversario");
 	$html_mala = str_replace("(*nome*)", $nome_pessoa, stripslashes($registro["html_modelo"]));
+	$html_mala = str_replace("(*dispomos_tambem*)", mostra_familias(), $html_mala);
 	$ENTER = chr(10);
 	$HTML = '<html>' . $ENTER;
 	$HTML .= '<head>' . $ENTER;
@@ -102,11 +116,22 @@ function manda_email_aniversariante($id_pessoa, $nome_pessoa, $email_pessoa){
 	$HTML .= '</body>' . $ENTER;
 	$HTML .= '</html>' . $ENTER;
 
-	$headers  = "MIME-Version: 1.0\r\n";
-	$headers .= "Content-type: text/html; charset=iso-8859-1\r\n";
-	$headers .= "To: " . $nome_pessoa . " <" . $email_pessoa . ">\r\n";
-	$headers .= "From: " . retorna_config('remetente') . " <" . retorna_config("email_remetente") . ">\r\n";
-		
+	$headers  = "MIME-Version: 1.0\n";
+	//$headers .= "To: " . $nome_pessoa . " <" . $email_pessoa . ">\n";
+	$headers .= "From: " . retorna_config('remetente') . " <" . retorna_config("email_remetente") . ">\n";
+	$headers .= "X-Sender: <" . retorna_config("email_remetente") . ">\n";
+	$headers .= "Return-Path: " . retorna_config("email_remetente") . "\n";
+	$headers .= "Errors-To: <" . retorna_config("email_remetente") . ">\n";
+	$headers .= "Message-Id: <".md5(uniqid(rand())).".".preg_replace("/[^a-z0-9]/i", "", retorna_config('remetente'))."@locaweb.com.br>\n";
+	$headers .= "Date: " . date("D, j M Y H:i:s -0300") . "\n";
+	$headers .= "X-Priority: 3 (Normal)\n";
+	$headers .= "X-MSMail-Priority: Normal\n";
+	$headers .= "Content-type: text/html; charset=iso-8859-1\n";
+	$headers .= "X-Mailer: Reacher WebMailer, Build by Leonardo Lima de Vasconcellos on 12.09.2005\n";
+	$headers .= "Importance: Normal\n";
+	$headers .= "Content-type: text/html; charset=iso-8859-1\n";
+	
+	ini_set(sendmail_from, retorna_config("email_remetente"));
 	mail($email_pessoa, $assunto, $HTML, $headers);
 }
 

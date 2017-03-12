@@ -95,7 +95,7 @@ monta_titulo_secao("Cadastro de Modelo de Mala Direta");
 						<td colspan="2" class="label" style="text-align: left;">Editor HTML Online</td>
 					</tr>
 					<tr>
-						<td colspan="2"><iframe width="100%" height="400" src="editor.php?var=html_modelo" name="editor" id="editor"></iframe></td>
+						<td colspan="2"><iframe width="100%" height="400" src="../editor.php?var=html_modelo" name="editor" id="editor"></iframe></td>
 					</tr>
 				</table>
 			<? termina_quadro_branco(); ?>
@@ -104,7 +104,10 @@ monta_titulo_secao("Cadastro de Modelo de Mala Direta");
 			<table width="100%">
 				<tr>
 					<td align="right"><?
-						if($modo == "update") echo('<input type="button" value="Apagar" class="botao_aqua" onclick="self.location=\'salva_instituicao.php?modo=apagar&id_instituicao=' . $id_instituicao . '\'">');
+						if($modo == "update"){
+							echo('<input type="button" value="Pré-Visualizar" class="botao_aqua" onClick="window.open(\'previsualizar.php?tipo=modelo&id=' . $id_modelo . '\');">&nbsp;');
+							echo('<input type="button" value="Apagar" class="botao_aqua" onclick="self.location=\'salva_instituicao.php?modo=apagar&id_instituicao=' . $id_instituicao . '\'">');
+						}
 						elseif ($modo == "add") echo('<input type="reset" value="Limpar Campos" class="botao_aqua">');
 						?>&nbsp;<input type="submit" value="Salvar" class="botao_aqua">
 					</td>
@@ -130,6 +133,9 @@ monta_titulo_secao("Cadastro de Modelo de Mala Direta");
 				&nbsp;Para ser possível o envio de emails personalizados, com o nome do destinatário, será necessário a inclusão da palavra chave <font color="#FF0000">(*nome*)</font> dentro do corpo da mensagem toda a vez que desejar se referir ao nome do destinatário. O sistema então, automaticamente, substituirá o a palavra chave pelo nome de cada destinatário do email.
 				<hr>
 				<img align="absmiddle" src="imagens/atencao.gif">
+				&nbsp;Para escolher onde será criada a tabela dinâmica de oferecimento de outras familias de produtos deve-se incluir no texto a palavra chave <font color="#FF0000">(*dispomos_tambem*)</font>.
+				<hr>
+				<img align="absmiddle" src="imagens/atencao.gif">
 				&nbsp;<font color="#FF0000"><b>Atenção:</b></font> Para o campo de Estilos CSS devem ser inseridos apenas os códigos dentro da tag &lt;style&gt;&lt;/style&gt; não devendo ser inserida a tag em si. Já para o campo de editor HTML online, devem ser inseridos os códigos dentro da tag &lt;body&gt;&lt;/body&gt;.
 			</div>
 			<? termina_quadro_azul(); ?>
@@ -137,7 +143,13 @@ monta_titulo_secao("Cadastro de Modelo de Mala Direta");
 	</tr>
 </table>
 <script language="javascript">
+	var i = setInterval(espera, 1000);	
+	function espera(){
+		if(self.editor.document.readyState == "complete"){
+			aplicar_estilo();
+			clearInterval(i);
+		}
+	}
 	document.forms[0].elements[0].focus();
-	setTimeout('aplicar_estilo();', 1000);
 </script>
 <? termina_pagina(); ?>

@@ -29,7 +29,7 @@ if($modo == "add"){
 		$result = mysql_query("SELECT LAST_INSERT_ID();") or tela_erro("Erro ao atualizar registros no Banco de dados: " . mysql_error(), false);
 		$registro = mysql_fetch_row($result);
 		$id_segmento = $registro[0];
-		$url = "form_segmento.php?modo=update&id_segmento=" . $id_segmento;
+		$url = "browser_segmentos.php";
 		$mensagem = "Segmento cadastrado com sucesso!";
 	}
 }
@@ -38,7 +38,7 @@ if($modo == "update"){
 	$query .= "nome_segmento='" . $nome_segmento . "'";
 	$query .= " WHERE id_segmento='" . $id_segmento . "'";
 	$mensagem = "Informações alteradas com sucesso!";
-	$url = "form_segmento.php?modo=update&id_segmento=" . $id_segmento;
+	$url = "browser_segmentos.php";
 	$result = mysql_query($query) or tela_erro("Erro ao atualizar registros no Banco de dados: " . mysql_error(), false);
 }
 if($result) tela_ok($mensagem, $url);

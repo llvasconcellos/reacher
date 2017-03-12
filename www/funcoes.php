@@ -10,6 +10,23 @@ function inicia_pagina(){
 			<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 			<link href="estilo.css" rel="stylesheet" rev="stylesheet">
 			<script language="JavaScript" src="menu.js"></script>
+			<script language="javascript">
+				var engwindow;
+				var i;
+				function engine(){
+					if(confirm("Deseja enviar todas as malas diretas para todos os segmentos cadastrados? Serão enviadas apenas as malas agendadas para o dia de hoje.")){
+						engwindow = window.open("engine.php", "engwindow");
+						i = setInterval(monitora_engine, 1000);	
+					}
+				}
+				function monitora_engine(){
+					if(engwindow.document.readyState == "complete"){
+						alert("Envio Terminado!");
+						clearInterval(i);
+						engwindow.close();
+					}
+				}
+			</script>
 		</head>
 		<body>
 			<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" border="0">
@@ -52,6 +69,12 @@ function inicia_pagina(){
 												<td>&nbsp;</td>
 												<td width="16" align="center"><a class="menu" href="browser_malas.php"><img border="0" align="absmiddle" src="imagens/icone_browser_mala_pq.gif"></a></td>
 												<td><a class="menu" href="browser_malas.php">Malas&nbsp;Já&nbsp;Criadas</a></td>
+												<td>&nbsp;</td>
+											</tr>
+											<tr onMouseOver="this.style.backgroundColor = '#C7D8E8';" onMouseOut="this.style.backgroundColor = '';">
+												<td>&nbsp;</td>
+												<td width="16" align="center"><a class="menu" href="#" onClick="engine();"><img border="0" align="absmiddle" src="imagens/engine.gif"></a></td>
+												<td><a class="menu" href="#" onClick="engine();">Enviar&nbsp;Malas&nbsp;Agendadas&nbsp;Para&nbsp;Hoje</a></td>
 												<td>&nbsp;</td>
 											</tr>
 											<tr>
@@ -217,13 +240,13 @@ function termina_quadro_azul(){
 
 function altera_valor($chave, $valor){
 	require("conectar_mysql.php");
-	$query = "UPDATE config SET valor='" . $valor . "' WHERE chave='" . $chave . "'";
+	$query = "UPDATE config_reacher SET valor='" . $valor . "' WHERE chave='" . $chave . "'";
 	$result = mysql_query($query) or die("Erro de conexão ao banco de dados: " . mysql_error());
 	require("desconectar_mysql.php");
 }
 function retorna_config($chave){
 	require("conectar_mysql.php");
-	$query = "SELECT valor FROM config WHERE chave='" . $chave . "'";
+	$query = "SELECT valor FROM config_reacher WHERE chave='" . $chave . "'";
 	$result = mysql_query($query) or die("Erro de conexão ao banco de dados: " . mysql_error());
 	$valor = mysql_fetch_assoc($result);
 	return $valor["valor"];
@@ -510,8 +533,8 @@ function make_user_page_nums($total_results, $print_query, $page_name, $results_
 			/* otherwise, if the loop page number is the same as the page were on, do not make it a link, but rather just print it out */
 		}
 		else {
-			if($page != 1) echo "<b class=\"menu\">".$real_page."</b>";
-			elseif($page < $numofpages) echo "<b class=\"menu\">".$real_page."</b>";
+			if($page != 1) echo "<b class=\"menu\" style=\"color: #FF0000;\">".$real_page."</b>";
+			elseif($page < $numofpages) echo "<b class=\"menu\" style=\"color: #FF0000;\">".$real_page."</b>";
 		}
 	}
 	
@@ -520,5 +543,39 @@ function make_user_page_nums($total_results, $print_query, $page_name, $results_
 		$pagenext = $page + 1;
 		echo ' <a href="' . $page_name . '?pagina=' . $pagenext . $print_query . '"><img align="absmiddle" title="Avançar" border="0" src="imagens/avancar.gif"></a>';
 	}
+}
+
+############################################################################################################################
+
+function mostra_familias(){
+	require("conectar_mysql.php");
+	$query = "SELECT * FROM familias WHERE inclui_mala_direta = 's' ORDER BY ordem";
+	$result = mysql_query($query) or die($query . "Erro de conexão ao banco de dados: " . mysql_error());
+	$ENTER = chr(10);
+	$HTML = '<table cellpadding="1" cellspacing="1" border="1">' . $ENTER;
+
+	$i = 0;
+	while($familia = mysql_fetch_assoc($result)){
+		$query = "SELECT * FROM subfamilia WHERE familia=" . $familia["cd"] . " ORDER BY rand() LIMIT 1";
+		$result2 = mysql_query($query) or die($query . "Erro de conexão ao banco de dados: " . mysql_error());
+		$subfamilia = mysql_fetch_assoc($result2);
+		if($i == 0) $HTML .= '<tr>' . $ENTER;
+		$HTML .= '<TD valign="middle" align="center" width="150">' . $ENTER;
+			$HTML .= '<A href="http://www.ldi.com.br/produtos.php?familia=' . $familia["cd"] . '">' . $ENTER;
+				$HTML .= '<IMG align="left" style="margin: 10px;" height="46" src="http://www.ldi.com.br/' . $subfamilia["imagem_thumb"] . '" border="0">' . $ENTER;
+				$HTML .= '<FONT face="Tahoma, sans-serif" style="FONT-SIZE: 9pt" size="2">' . $ENTER;
+				$HTML .= $familia["titulo_mala_direta"] . $ENTER;
+				$HTML .= '</FONT>' . $ENTER;
+			$HTML .= '</A>' . $ENTER;
+		$HTML .= '</TD>' . $ENTER;
+		$i++;
+		if($i == 3){
+			$HTML .= '</tr>' . $ENTER;
+			$i = 0;
+		}
+	}
+	$HTML .= '</table>' . $ENTER;
+	require("desconectar_mysql.php");
+	return $HTML;
 }
 ?>

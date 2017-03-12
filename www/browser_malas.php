@@ -41,7 +41,7 @@ $query .= " CONCAT('<a title=\"Copiar\" href=\"form_mala.php?modo=copiar&id_mala
 $query .= "nome_mala, DATE_FORMAT(data_mala,'%d/%m/%Y') as data_mala, ";
 $query .= " CONCAT('<xmp>', LEFT(css_mala,50) , '</xmp>') as css_mala,";
 $query .= " CONCAT('<xmp>', LEFT(html_mala,50) , '</xmp>') as html_mala,";
-$query .= " CASE status_mala WHEN 1 THEN '<img title=\"Mala Direta agendada para envio\" src=\"imagens/icone_email_agendado.gif\">' WHEN 2 THEN '<img title=\"Mala Direta enviada\" src=\"imagens/icone_email_enviado.gif\">' END as status_mala,";
+$query .= " CASE status_mala WHEN 1 THEN CONCAT('<a href=\"javascript: alterar_status(', id_mala , ',2);\"><img border=\"0\" title=\"Mala Direta agendada para envio\" src=\"imagens/icone_email_agendado.gif\"></a>') WHEN 2 THEN CONCAT('<a href=\"javascript: alterar_status(', id_mala , ',1);\"><img border=\"0\" title=\"Mala Direta enviada\" src=\"imagens/icone_email_enviado.gif\"></a>') END as status_mala,";
 $query .= " CONCAT('<a href=\"javascript: apagar(', id_mala , ');\"><img border=\"0\" src=\"imagens/lixeira.gif\"></a>')";
 $query .= " from malas ";
 
@@ -106,8 +106,12 @@ $colunas[7]['alinhamento'] = "right";
 ?>
 <script language="javascript">
 	function apagar(id){
-		if(confirm("Deseja remover este modelo do sistema?"))
+		if(confirm("Deseja remover este mala direta do sistema?"))
 			window.location = 'salva_mala.php?modo=apagar&pagina=<?=$_REQUEST["pagina"]?>&id_mala=' + id + '<?=$string?>';
+	}
+	function alterar_status(id, status){
+		if(confirm("Deseja modificar o status desta mala direta?"))
+			window.location = 'salva_mala.php?modo=alterar_status&pagina=<?=$_REQUEST["pagina"]?>&id_mala=' + id + '&status_mala=' + status + '<?=$string?>';
 	}
 </script>
 <? 

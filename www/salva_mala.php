@@ -11,6 +11,7 @@ $assunto_mala = $_REQUEST["assunto_mala"];
 $css_mala = addslashes(rawurldecode($_REQUEST["css_mala"]));
 $html_mala = addslashes($_REQUEST["html_mala"]);
 $data_mala = $_REQUEST["data_mala"];
+$status_mala = $_REQUEST["status_mala"];
 
 if(empty($data_mala)) $data_mala = "NULL";
 else{
@@ -25,7 +26,17 @@ if($modo == "apagar"){
 	$query = "DELETE FROM segmentos_malas WHERE id_mala=" . $id_mala;
 	$result = mysql_query($query) or tela_erro("Erro ao atualizar registros no Banco de dados: " . mysql_error(), false);
 	
-	$mensagem = "Modelos removido com sucesso!";
+	$mensagem = "Mala direta removida com sucesso!";
+	$url = "browser_malas.php?pagina=" . $pagina;
+	if($result) tela_ok($mensagem, $url);
+	die();
+}
+
+if($modo == "alterar_status"){
+	$query = "UPDATE malas SET status_mala = '" . $status_mala . "' WHERE id_mala='" . $id_mala . "'";
+	$result = mysql_query($query) or tela_erro("Erro de conexão ao banco de dados: " . mysql_error());
+	
+	$mensagem = "Status da mala direta modificado com sucesso!";
 	$url = "browser_malas.php?pagina=" . $pagina;
 	if($result) tela_ok($mensagem, $url);
 	die();
@@ -60,6 +71,7 @@ if($modo == "update"){
 	$query .= "assunto_mala='" . $assunto_mala . "', ";
 	$query .= "css_mala='" . $css_mala . "', ";
 	$query .= "html_mala='" . $html_mala . "', ";
+	$query .= "status_mala='" . $status_mala . "', ";
 	$query .= "data_mala=" . $data_mala;
 	$query .= " WHERE id_mala='" . $id_mala . "'";
 	$mensagem = "Informações alteradas com sucesso!";

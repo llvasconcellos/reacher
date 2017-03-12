@@ -185,6 +185,7 @@ function browser_pessoas(){
 	$query .= " CONCAT('<a title=\"Editar\" href=\"form_pessoa.php?modo=update&id_pessoa=', id_pessoa , '\"><img border=\"0\" src=\"imagens/editar.gif\"></a>') as id_pessoa,";
 	$query .= " CONCAT('<a title=\"Copiar\" href=\"form_pessoa.php?modo=copiar&id_pessoa=', id_pessoa , '\"><img border=\"0\" src=\"imagens/copiar.gif\"></a>') as copiar,";
 	$query .= "nome_pessoa, email_pessoa, DATE_FORMAT(dt_nascimento_pessoa,'%d/%m/%Y') as dt_nascimento_pessoa, ";
+	$query .= " CASE recebe_email_pessoa WHEN 'n' THEN '<img border=\"0\" title=\"Mala Direta agendada para envio\" src=\"imagens/icone_email_agendado.gif\">' WHEN 's' THEN '<img border=\"0\" title=\"Mala Direta enviada\" src=\"imagens/icone_email_enviado.gif\">' END as recebe_email_pessoa, ";
 	$query .= "CONCAT('<a href=\"javascript: apagar(', id_pessoa , ');\"><img border=\"0\" src=\"imagens/lixeira.gif\"></a>')";
 	$query .= " from pessoas p LEFT OUTER JOIN instituicoes i ON i.id_instituicao = p.id_instituicao WHERE p.id_instituicao=" . $id_instituicao;
 	
@@ -214,9 +215,14 @@ function browser_pessoas(){
 	$colunas[4]['alinhamento'] = "center";
 	
 	$colunas[5]['largura'] = "4%";
-	$colunas[5]['label'] = "&nbsp;";
-	$colunas[5]['campo'] = "";
+	$colunas[5]['label'] = "Email?";
+	$colunas[5]['campo'] = "recebe_email_pessoa";
 	$colunas[5]['alinhamento'] = "right";
+	
+	$colunas[6]['largura'] = "4%";
+	$colunas[6]['label'] = "&nbsp;";
+	$colunas[6]['campo'] = "";
+	$colunas[6]['alinhamento'] = "right";
 	?>
 	<script language="javascript">
 		function apagar(id){

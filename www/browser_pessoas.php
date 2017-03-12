@@ -40,6 +40,7 @@ $query .= " CONCAT('<a title=\"Editar\" href=\"form_pessoa.php?modo=update&id_pe
 $query .= " CONCAT('<a title=\"Copiar\" href=\"form_pessoa.php?modo=copiar&id_pessoa=', id_pessoa , '\"><img border=\"0\" src=\"imagens/copiar.gif\"></a>') as copiar,";
 $query .= "nome_pessoa, email_pessoa, DATE_FORMAT(dt_nascimento_pessoa,'%d/%m/%Y') as dt_nascimento_pessoa, ";
 $query .= "CASE p.id_instituicao WHEN '0' THEN 'Pessoa Fisica' ELSE nome_instituicao END, ";
+$query .= " CASE recebe_email_pessoa WHEN 'n' THEN '<img border=\"0\" title=\"Mala Direta agendada para envio\" src=\"imagens/icone_email_agendado.gif\">' WHEN 's' THEN '<img border=\"0\" title=\"Mala Direta enviada\" src=\"imagens/icone_email_enviado.gif\">' END as recebe_email_pessoa,";
 $query .= "CONCAT('<a href=\"javascript: apagar(', id_pessoa , ');\"><img border=\"0\" src=\"imagens/lixeira.gif\"></a>')";
 $query .= " from pessoas p LEFT OUTER JOIN instituicoes i ON i.id_instituicao = p.id_instituicao";
 
@@ -87,15 +88,20 @@ $colunas[4]['label'] = 'Data&nbsp;Nascimento';
 $colunas[4]['campo'] = "dt_nascimento_pessoa";
 $colunas[4]['alinhamento'] = "center";
 
-$colunas[5]['largura'] = "27%";
+$colunas[5]['largura'] = "23%";
 $colunas[5]['label'] = "Instituição";
 $colunas[5]['campo'] = "nome_instituicao";
 $colunas[5]['alinhamento'] = "left";
 
 $colunas[6]['largura'] = "4%";
-$colunas[6]['label'] = "&nbsp;";
-$colunas[6]['campo'] = "";
-$colunas[6]['alinhamento'] = "right";
+$colunas[6]['label'] = "Email?";
+$colunas[6]['campo'] = "recebe_email_pessoa";
+$colunas[6]['alinhamento'] = "center";
+
+$colunas[7]['largura'] = "4%";
+$colunas[7]['label'] = "&nbsp;";
+$colunas[7]['campo'] = "";
+$colunas[7]['alinhamento'] = "right";
 ?>
 <script language="javascript">
 	function apagar(id){

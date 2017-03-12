@@ -72,7 +72,13 @@ monta_titulo_secao("Cadastro de Pessoas");
 			<div style="width: 100%; text-align:justify;">
 				<img align="absmiddle" src="imagens/info.gif">
 				&nbsp;Neste formulário é possivel gravar informações de clientes finais ou contatos em empresas consumidoras dos produtos anunciados.
+				<hr>
 				<center>
+					<a title="Clique para adicionar uma nova pessoa nesta instituição" href="form_pessoa.php?modo=pessoa_instituicao&id_instituicao=<?=$id_instituicao?>">
+						<img border="0" align="absmiddle" src="imagens/icone_pessoa_mais.gif">
+					</a>
+					<br>
+					<span style="font-size:9px;">Nova Pessoa</span>
 					<hr>
 					<a title="Clique para adicionar um novo segmento de mercado" href="form_segmento.php">
 						<img border="0" align="absmiddle" src="imagens/icone_segmento_mais.gif">
@@ -146,21 +152,14 @@ monta_titulo_secao("Cadastro de Pessoas");
 								<table width="100%">
 									<tr>
 										<td width="40%" class="label">Sim</td>
-										<td><input type="radio" name="recebe_email_pessoa" value="s"<? if(($recebe_email_pessoa == "s") || ($modo == "add")) echo(" checked");?>></td>
+										<td><input type="radio" name="recebe_email_pessoa" value="s"<? if(($recebe_email_pessoa == "s") || ($modo == "add") || ($modo == "pessoa_instituicao")) echo(" checked");?>></td>
 										<td width="10%">&nbsp;</td>
 										<td width="40%" class="label">Não</td>
 										<td><input type="radio" name="recebe_email_pessoa" value="n"<? if ($recebe_email_pessoa == "n") echo(" checked");?>></td>
 									</tr>
 								</table>
 							</fieldset>
-
-						<!--<td>
-							<select name="recebe_email_pessoa">
-								<option value="s"<? if ($recebe_email_pessoa == "s") echo(" selected");?>>Sim</option>
-								<option value="n"<? if ($recebe_email_pessoa == "n") echo(" selected");?>>Não</option>
-							</select>
 						</td>
-						<td></td>-->
 					</tr>
 				</table>
 			</center>
@@ -213,6 +212,13 @@ monta_titulo_secao("Cadastro de Pessoas");
 					</td>
 				</tr>
 			</table>
+			<script language="javascript">
+				document.forms[0].elements[1].focus();
+				var cal1 = new calendar1(document.forms[0].elements['dt_nascimento_pessoa']);
+				cal1.year_scroll = true;
+				cal1.time_comp = false;
+				<? if((($modo == "update") || ($modo == "copiar") || ($modo == "pessoa_instituicao")) && ($id_instituicao != "0")) echo('esconde_segmentos();'); ?>
+			</script>
 			<? termina_quadro_branco(); ?>
 			<?
 			if($modo != "update") $modo = "add";
@@ -223,12 +229,6 @@ monta_titulo_secao("Cadastro de Pessoas");
 		</td>
 	</tr>
 </table>
-<script language="javascript">
-	document.forms[0].elements[1].focus();
-	var cal1 = new calendar1(document.forms[0].elements['dt_nascimento_pessoa']);
-	cal1.year_scroll = true;
-	cal1.time_comp = false;
-</script>
 <?
 termina_pagina();
 ?>
