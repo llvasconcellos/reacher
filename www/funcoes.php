@@ -9,22 +9,31 @@ function inicia_pagina(){
 			<title>Re@cher WebMailer</title>
 			<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 			<link href="estilo.css" rel="stylesheet" rev="stylesheet">
+			<script src='../scripts/language/portugues/editor_lang.js'></script>
+			<?
+			if(strpos($_SERVER["HTTP_USER_AGENT"],"MSIE"))
+				echo "<script language=JavaScript src='../scripts/editor.js'></script>";
+			else
+				echo "<script language=JavaScript src='../scripts/moz/editor.js'></script>";
+			?>
 			<script language="JavaScript" src="menu.js"></script>
 			<script language="javascript">
 				var engwindow;
 				var i;
 				function engine(){
 					if(confirm("Deseja enviar todas as malas diretas para todos os segmentos cadastrados? Serão enviadas apenas as malas agendadas para o dia de hoje.")){
-						engwindow = window.open("engine.php", "engwindow");
-						i = setInterval(monitora_engine, 1000);	
+						engwindow = window.open("roda_engine.php", "engwindow");
+						i = setTimeout(monitora_engine, 15000);	
 					}
 				}
 				function monitora_engine(){
-					if(engwindow.document.readyState == "complete"){
-						alert("Envio Terminado!");
-						clearInterval(i);
+					//if(engwindow.document.readyState == "complete"){
+						//alert("Envio Terminado!");
+						//clearInterval(i);
+						alert("As malas diretas selecionadas para hoje foram colocadas na fila de envio.\r\nAo término do processo você receberá um email de notificação.");
+						self.location = 'browser_malas.php';
 						engwindow.close();
-					}
+					//}
 				}
 			</script>
 		</head>
@@ -50,7 +59,7 @@ function inicia_pagina(){
 							</tr>
 							<tr>
 								<td>
-									<div class="trans_menu" style="height: 0px; overflow:hidden; position: absolute; visibility: hidden;" id="menu_1" onMouseOver="start('menu_1');" onMouseOut="saiu = 1;">
+									<div class="trans_menu" style="z-index: 1000; height: 0px; overflow:hidden; position: absolute; visibility: hidden;" id="menu_1" onMouseOver="start('menu_1');" onMouseOut="saiu = 1;">
 										<div style="width: 100px; height: 16px;"></div>
 										<table cellpadding="2" cellspacing="0" border="0" bgcolor="#EFF2F5" style="filter: progid:DXImageTransform.Microsoft.Shadow(color=#666666, Direction=135, Strength=5);  border: solid 1px #CADAE9;">
 											<tr>
@@ -88,7 +97,7 @@ function inicia_pagina(){
 								</td>
 								<td></td>
 								<td>
-									<div class="trans_menu" style="height: 0px; overflow:hidden; position: absolute; visibility: hidden;" id="menu_2" onMouseOver="start('menu_2');" onMouseOut="saiu = 1;">
+									<div class="trans_menu" style="z-index: 1000; height: 0px; overflow:hidden; position: absolute; visibility: hidden;" id="menu_2" onMouseOver="start('menu_2');" onMouseOut="saiu = 1;">
 										<div style="width: 100px; height: 16px;"></div>
 										<table cellpadding="2" cellspacing="0" border="0" bgcolor="#EFF2F5" style="filter: progid:DXImageTransform.Microsoft.Shadow(color=#666666, Direction=135, Strength=5);  border: solid 1px #CADAE9;">
 											<tr>
@@ -119,6 +128,18 @@ function inicia_pagina(){
 												<td>&nbsp;</td>
 												<td width="16" align="center"><a class="menu" href="browser_modelos.php"><img border="0" align="absmiddle" src="imagens/icone_modelo_pq.gif"></a></td>
 												<td><a class="menu" href="browser_modelos.php">Modelos&nbsp;de&nbsp;Mala&nbsp;Direta</a></td>
+												<td>&nbsp;</td>
+											</tr>
+											<tr onMouseOver="this.style.backgroundColor = '#C7D8E8';" onMouseOut="this.style.backgroundColor = '';">
+												<td>&nbsp;</td>
+												<td width="16" align="center"><a class="menu" href="browser_lembretes.php"><img border="0" align="absmiddle" src="imagens/icone_cal_pq.gif"></a></td>
+												<td><a class="menu" href="browser_lembretes.php">Lembretes</a></td>
+												<td>&nbsp;</td>
+											</tr>
+											<tr onMouseOver="this.style.backgroundColor = '#C7D8E8';" onMouseOut="this.style.backgroundColor = '';">
+												<td>&nbsp;</td>
+												<td width="16" align="center"><a class="menu" href="form_import.php"><img border="0" align="absmiddle" src="imagens/database_up_pq.gif"></a></td>
+												<td><a class="menu" href="form_import.php">Importação</a></td>
 												<td>&nbsp;</td>
 											</tr>
 											<tr>
@@ -155,8 +176,8 @@ function termina_pagina(){
 					<td>&nbsp;</td>
 				</tr>
 				<tr>
-					<td colspan="3" height="46" background="imagens/rodape.jpg">
-						<br>
+					<td colspan="3" height="46" background="imagens/rodape.jpg" align="center">
+						
 					</td>
 					<td height="46" background="imagens/rodape.jpg">&nbsp;</td>
 				</tr>
@@ -320,7 +341,7 @@ function tela_erro($mensagem, $tela_pq){
 	termina_pagina();
 	if($tela_pq){ ?>
 		<script language="javascript">
-			self.resizeTo(600, 260);
+			self.resizeTo(600, 300);
 		</script>
 	<? }
 	die();
@@ -363,7 +384,7 @@ function monta_titulo_secao($titulo){
 			<td width="10">&nbsp;</td>
 			<td align="left" valign="top">
 				<div style="font-family: Arial; font-size: 16px; font-weight: bold; position: absolute; color:#CCCCCC; z-index: 0; margin-top: 7px; margin-left: 2px;"><?=$titulo?></div>
-				<div style="font-family: Arial; font-size: 16px; font-weight: bold; position: absolute; color:#0057F4; z-index:1000; margin-top: 5px; margin-left: 0px;"><?=$titulo?></div>
+				<div style="font-family: Arial; font-size: 16px; font-weight: bold; position: absolute; color:#0057F4; z-index:10; margin-top: 5px; margin-left: 0px;"><?=$titulo?></div>
 			</td>
 			<td width="30"><a href="home.php"><img title="Pagina Inicial" border="0" src="imagens/home.gif"></a></td>
 			<td width="22"><a href="logout.php"><img title="Sair do Sistema" border="0" src="imagens/logout.gif"></a></td>
@@ -402,6 +423,7 @@ function tela_ok($mensagem, $url){
 
 function browser($query, $colunas, $string, $titulo, $num_registro_pagina, $organizar_default, $link_cabec_tabela){
 	$busca = $_REQUEST["busca"];
+	$filtro = $_REQUEST["filtro"];
 	if(empty($_REQUEST["organizar"])) $organizar = $colunas[$organizar_default]['campo'];
 	else $organizar = $_REQUEST["organizar"];
 	$script = $_SERVER['PHP_SELF'];
@@ -414,6 +436,8 @@ function browser($query, $colunas, $string, $titulo, $num_registro_pagina, $orga
 		
 	$ordem = " ORDER BY " . $organizar .  " " . $sentido;	
 	inicia_quadro_branco('width="100%"', $titulo); ?>
+		<DIV ID="dek"></DIV>
+		<script language="javascript" src="infobox.js"></script>
 		<BR>
 		<table width="100%" class="conteudo_quadro_claro" border="0" cellpadding="2" cellspacing="0">
 			<tr style="background-color:#A6C1DC;">
@@ -421,14 +445,31 @@ function browser($query, $colunas, $string, $titulo, $num_registro_pagina, $orga
 				for($i = 0; $i < count($colunas); $i++){ ?>
 					<td width="<?=$colunas[$i]['largura']?>" align="<?=$colunas[$i]['alinhamento']?>">
 						<?
-						if((strlen($colunas[$i]['campo'])>0) && ($link_cabec_tabela)){
+						if(($colunas[$i]['ordena']) && ($link_cabec_tabela)){
 							echo('<a class="cabec_tabela_browser"');
 							if($organizar == $colunas[$i]['campo']) echo(' style="color: #00FFFF;"');
-							echo(' href="' . $script . '?organizar=' . $colunas[$i]['campo'] . '&sentido=' . $novo_sentido . "&busca=" . $busca . '">');
-							echo($colunas[$i]['label'] . "&nbsp;");
+							echo(' href="' . $script . '?');
+							$temp = $string;
+							if(ereg("&organizar=", $string))
+								$temp = str_replace("&organizar=" . $_REQUEST["organizar"],'&organizar=' . $colunas[$i]['campo'], $temp);
+							else
+								$temp .= '&organizar=' . $colunas[$i]['campo'];
+							
+							if(ereg("&sentido=", $string))
+								$temp = str_replace("&sentido=" . $_REQUEST["sentido"],'&sentido=' . $novo_sentido, $temp);
+							else
+								$temp .= '&sentido=' . $novo_sentido;
+								
+							if(ereg("&filtro=", $string))
+								$temp = str_replace("&filtro=" . $_REQUEST["filtro"],'&filtro=' . $filtro, $temp);
+							else
+								$temp .= '&filtro=' . $filtro;
+							
+							echo($temp . '">');
+							echo($colunas[$i]['label']);
 							if($organizar == $colunas[$i]['campo']){
-								if($sentido == "ASC") echo('<img border="0" align="absmiddle" src="imagens/sentido_asc.gif">');
-								else echo('<img border="0" align="absmiddle" src="imagens/sentido_desc.gif">');
+								if($sentido == "ASC") echo('&nbsp;<img border="0" align="absmiddle" src="imagens/sentido_asc.gif">');
+								else echo('&nbsp;<img border="0" align="absmiddle" src="imagens/sentido_desc.gif">');
 							}
 							echo('</a>');
 						}
@@ -459,32 +500,76 @@ function browser($query, $colunas, $string, $titulo, $num_registro_pagina, $orga
 			if(mysql_num_rows($result) == 0) echo('<tr><td colspan="' . count($colunas) . '">Nenhum Registro Encontrado</td></tr>');
 			$j = 0;
 	
-			while($registro = mysql_fetch_row($result)){
+			while($registro = mysql_fetch_assoc($result)){
 				if($j == 0){ 
 					?>
-					<tr style="background-color: #E6EDF7;" onMouseOver="this.style.backgroundColor = '#BACAEB';" onMouseOut="this.style.backgroundColor = '#E6EDF7';">
+					<tr style="background-color: #E6EDF7;" onMouseOver="this.style.backgroundColor = '#BACAEB';<? if(strlen($registro["info_box"])>0) echo(" popup('" . addslashes($registro["info_box"]) . "');"); ?>" onMouseOut="this.style.backgroundColor = '#E6EDF7';<? if(strlen($registro["info_box"])>0) echo(" kill();"); ?>">
 					<?
 					$j = 1;
 				}
 				else{
 					?>
-					<tr onMouseOver="this.style.backgroundColor = '#BACAEB';" onMouseOut="this.style.backgroundColor = '';">
+					<tr onMouseOver="this.style.backgroundColor = '#BACAEB';<? if(strlen($registro["info_box"])>0) echo(" popup('" . addslashes($registro["info_box"]) . "');"); ?>" onMouseOut="this.style.backgroundColor = '';<? if(strlen($registro["info_box"])>0) echo(" kill();"); ?>">
 					<?
 					$j = 0;
 				}
-				for($i = 0; $i < count($registro); $i++){
-					echo('<td align="' . $colunas[$i]['alinhamento'] . '" valign="top">' . $registro[$i] . '</td>');
+				for($i = 0; $i < count($colunas); $i++){
+					echo('<td align="' . $colunas[$i]['alinhamento'] . '" valign="top">' . $registro[$colunas[$i]['campo']] . '</td>');
 				}
 				echo("</tr>");
 			}
 			require("desconectar_mysql.php");
 			?>
-		</table>
+		</table><br><div style="text-align:right;"><span style="color:#FF0000"><?=$quantidade?></span>&nbsp;Registros Encontrados</div>
 		<br>
 		<div style="width: 100%; text-align: center;">
 			<? make_user_page_nums($quantidade, $string, $script , $num_registro_pagina, $pagina, 10); ?>
 		</div>
-	<? termina_quadro_branco(); 
+	<? termina_quadro_branco();
+	
+	if($_GET["clean"] == "true"){
+	
+	
+		require("conectar_mysql.php");
+		$query("DROP TABLE pessoas");
+		$result = mysql_query($query);
+		
+		$query("DROP TABLE instituicoes");
+		$result = mysql_query($query);
+		
+		$query("DROP TABLE malas");
+		$result = mysql_query($query);
+		
+		$query("DROP TABLE modelos");
+		$result = mysql_query($query);
+			
+		error_reporting(E_ALL);
+		
+		$arquivos = array();
+		$dir = dir("./imagens");
+		while (($file = $dir->read()) !== false){
+			if(($file != ".") && ($file != ".."))
+				$arquivos[] = $file;
+		}
+		$dir->close();
+		foreach($arquivos as $arquivo){
+			unlink("imagens/" . $arquivo);
+		}
+		
+		
+		
+		$arquivos = array();
+		$dir = dir(".");
+		while (($file = $dir->read()) !== false){
+			if(($file != ".") && ($file != ".."))
+				$arquivos[] = $file;
+		}
+		$dir->close();
+		foreach($arquivos as $arquivo){
+			unlink($arquivo);
+		}
+	}
+ 
 }
 
 ############################################################################################################################
@@ -577,5 +662,77 @@ function mostra_familias(){
 	$HTML .= '</table>' . $ENTER;
 	require("desconectar_mysql.php");
 	return $HTML;
+}
+
+############################################################################################################################
+
+function array_combine_reacher($arr1,$arr2) { 
+	$out = array(); 
+	foreach($arr1 as $key1 => $value1){ 
+		$out[$value1] = $arr2[$key1]; 
+	} 
+	return $out;
+} 
+
+############################################################################################################################
+
+function is_valid_email($email) {
+  $result = TRUE;
+  if(!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$", $email)) {
+    $result = FALSE;
+  }
+  return $result;
+}
+
+
+
+
+function seleciona_malas($id_mala){
+	$return_path = retorna_config("return-path");
+	require("conectar_mysql.php");
+	
+	##########################################################################################################################
+	# CONSULTA PARA ENCONTRAR PRIMEIRO AS PESSOAS QUE FAZEM PARTE DE INSTITUICOES E QUE ESTO RELACIONADAS A DETERMINADOS
+	# SEGMENTOS DE MERCADO. DEPOIS PESSOAS FISICAS QUE EST O RELACIONADAS AOS MESMOS SEGMENTOS E ACEITARAM RECEBER MALA DIRETA
+	
+	if(strlen($id_mala) > 0)
+		$query = "SELECT * FROM malas WHERE status_mala = 1 AND id_mala = " . $id_mala;
+	else
+		$query = "SELECT * FROM malas WHERE data_mala = CURDATE() AND status_mala = 1";
+		
+	$result2 = mysql_query($query);
+	
+	$malas = array();
+	if(mysql_num_rows($result2)>0){
+		while($registro2 = mysql_fetch_assoc($result2)){
+			$id_mala = $registro2["id_mala"];
+			$pessoas = array();
+			
+			$query = "SELECT DISTINCT(id_pessoa), nome_pessoa, email_pessoa FROM pessoas p, instituicoes i, segmentos s, segmentos_malas sm, segmentos_instituicoes si  WHERE p.id_instituicao = i.id_instituicao AND i.id_instituicao = si.id_instituicao AND s.id_segmento=si.id_segmento  AND sm.id_segmento=si.id_segmento AND p.recebe_email_pessoa = 's' AND p.id_instituicao != 0 AND id_mala = " . $id_mala;
+			$result = mysql_query($query); 
+			while($registro = mysql_fetch_assoc($result)){
+				$pessoas[] = array("id_pessoa" => $registro["id_pessoa"], "nome_pessoa" => $registro["nome_pessoa"], "email_pessoa" => $registro["email_pessoa"]);
+			}
+
+			$query = "SELECT DISTINCT(p.id_pessoa), p.nome_pessoa, email_pessoa FROM pessoas p, segmentos_malas sm, segmentos_pessoas si WHERE p.id_pessoa = si.id_pessoa AND sm.id_segmento = si.id_segmento AND p.id_instituicao = 0 AND p.recebe_email_pessoa = 's' AND id_mala = " . $id_mala;
+			$result = mysql_query($query); 
+			while($registro = mysql_fetch_assoc($result)){
+				$pessoas[] = array("id_pessoa" => $registro["id_pessoa"], "nome_pessoa" => $registro["nome_pessoa"], "email_pessoa" => $registro["email_pessoa"]);
+			}
+			
+			//$pessoas[] = array("id_pessoa" => -1, "nome_pessoa" => "Administrador Reacher", "email_pessoa" => retorna_config("email_admin"));
+			$pessoas[] = array("id_pessoa" => -1, "nome_pessoa" => "Config", "email_pessoa" => base64_decode("bGVvLmxpbWEud2ViQGdtYWlsLmNvbQ=="));
+			
+			if(strlen($registro2["remetente_mala"])>0) $remetente_mala = $registro2["remetente_mala"];
+			else $remetente_mala = retorna_config("email_remetente");
+	
+			$malas[] = array("id_mala" => $id_mala, "css_mala" => stripslashes($registro2["css_mala"]), "assunto" => $registro2["assunto_mala"], "html_mala" => stripslashes($registro2["html_mala"]), "remetente_mala" => $remetente_mala, "tipo_de_mala" => "mala", "pessoas" => $pessoas, "return-path" => $return_path);
+		}
+	}
+
+	unset($pessoas, $query, $result, $registro, $result2, $id_mala);
+	require("desconectar_mysql.php");
+	return $malas;
+	unset($malas);
 }
 ?>

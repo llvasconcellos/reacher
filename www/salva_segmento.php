@@ -9,12 +9,32 @@ $id_segmento = $_REQUEST["id_segmento"];
 $nome_segmento = $_REQUEST["nome_segmento"];
 
 if($modo == "apagar"){
-	$query = "DELETE FROM segmentos WHERE id_segmento='" . $id_segmento . "'";
+	$query = "SELECT * FROM segmentos_pessoas WHERE id_segmento=" . $id_segmento;
 	$result = mysql_query($query) or tela_erro("Erro de conexão ao banco de dados: " . mysql_error());
-	$mensagem = "Segmento removido com sucesso!";
-	$url = "browser_segmentos.php?pagina=" . $pagina;
-	if($result) tela_ok($mensagem, $url);
-	die();
+	if(mysql_num_rows($result)>0) tela_erro("Existem pessoas cadastradas neste segmento");
+	else{
+		$query = "SELECT * FROM segmentos_instituicoes WHERE id_segmento=" . $id_segmento;
+		$result = mysql_query($query) or tela_erro("Erro de conexão ao banco de dados: " . mysql_error());
+		if(mysql_num_rows($result)>0) tela_erro("Existem instituicoes cadastradas neste segmento");
+		else{
+			$query = "DELETE FROM segmentos WHERE id_segmento='" . $id_segmento . "'";
+			$result = mysql_query($query) or tela_erro("Erro de conexão ao banco de dados: " . mysql_error());
+			
+			$query = "DELETE FROM segmentos_pessoas WHERE id_segmento='" . $id_segmento . "'";
+			$result = mysql_query($query) or tela_erro("Erro de conexão ao banco de dados: " . mysql_error());
+			
+			$query = "DELETE FROM segmentos_instituicoes WHERE id_segmento='" . $id_segmento . "'";
+			$result = mysql_query($query) or tela_erro("Erro de conexão ao banco de dados: " . mysql_error());
+			
+			$query = "DELETE FROM segmentos_malas WHERE id_segmento='" . $id_segmento . "'";
+			$result = mysql_query($query) or tela_erro("Erro de conexão ao banco de dados: " . mysql_error());
+			
+			$mensagem = "Segmento removido com sucesso!";
+			$url = "browser_segmentos.php?pagina=" . $pagina;
+			if($result) tela_ok($mensagem, $url);
+			die();
+		}
+	}
 }
 
 

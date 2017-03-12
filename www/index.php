@@ -9,7 +9,7 @@ inicia_quadro_branco('width="35%"', "Login");
 	<form name="login" action="valida_usuario.php" method="post">
 	<tr>
 		<td width="40" class="label">Senha:</td>
-		<td width="105"><input type="password" name="senha" maxlength="10" class="input_text"></td>
+		<td width="105"><input type="password" name="senha" maxlength="30" class="input_text"></td>
 		<td width="20"><input type="image" src="imagens/password.gif"></td>
 	</tr>
 	</form>

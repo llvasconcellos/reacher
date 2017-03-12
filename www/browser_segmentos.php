@@ -1,7 +1,7 @@
 <?
 require("funcoes.php");
 inicia_pagina();
-monta_titulo_secao("Instituições Cadastradas");
+monta_titulo_secao("Segmentos Cadastrados");
 
 $busca = $_REQUEST["busca"];
 $organizar = $_REQUEST["organizar"];
@@ -33,10 +33,10 @@ inicia_quadro_branco('width="100%"', ''); ?>
 <? termina_quadro_branco();
 
 $query = "SELECT ";
-$query .= " CONCAT('<a title=\"Editar\" href=\"form_segmento.php?modo=update&id_segmento=', id_segmento , '\"><img border=\"0\" src=\"imagens/editar.gif\"></a>') as id_segmento,";
+$query .= " CONCAT('<a title=\"Editar\" href=\"form_segmento.php?modo=update&id_segmento=', id_segmento , '\"><img border=\"0\" src=\"imagens/editar.gif\"></a>') as editar,";
 $query .= " CONCAT('<a title=\"Copiar\" href=\"form_segmento.php?modo=copiar&id_segmento=', id_segmento , '\"><img border=\"0\" src=\"imagens/copiar.gif\"></a>') as copiar,";
 $query .= "nome_segmento, ";
-$query .= "CONCAT('<a href=\"javascript: apagar(', id_segmento , ');\"><img border=\"0\" src=\"imagens/lixeira.gif\"></a>')";
+$query .= "CONCAT('<a href=\"javascript: apagar(', id_segmento , ');\"><img border=\"0\" src=\"imagens/lixeira.gif\"></a>') as apagar";
 $query .= " from segmentos ";
 
 if(!empty($busca)) {
@@ -48,23 +48,27 @@ if(!empty($busca)) {
 
 $colunas[0]['largura'] = "3%";
 $colunas[0]['label'] = "&nbsp;";
-$colunas[0]['campo'] = "";
+$colunas[0]['campo'] = "editar";
 $colunas[0]['alinhamento'] = "left";
+$colunas[0]['ordena'] = false;
 
 $colunas[1]['largura'] = "5%";
 $colunas[1]['label'] = "&nbsp;";
-$colunas[1]['campo'] = "";
+$colunas[1]['campo'] = "copiar";
 $colunas[1]['alinhamento'] = "left";
+$colunas[1]['ordena'] = false;
 
 $colunas[2]['largura'] = "87%";
 $colunas[2]['label'] = 'Nome';
 $colunas[2]['campo'] .= 'nome_segmento';
 $colunas[2]['alinhamento'] = "left";
+$colunas[2]['ordena'] = true;
 
 $colunas[3]['largura'] = "5%";
 $colunas[3]['label'] = "&nbsp;";
-$colunas[3]['campo'] = "";
+$colunas[3]['campo'] = "apagar";
 $colunas[3]['alinhamento'] = "right";
+$colunas[3]['ordena'] = false;
 ?>
 <script language="javascript">
 	function apagar(id){

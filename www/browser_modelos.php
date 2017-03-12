@@ -35,58 +35,64 @@ inicia_quadro_branco('width="100%"', ''); ?>
 <? termina_quadro_branco();
 
 $query = "SELECT ";
-$query .= " CONCAT('<a title=\"Editar\" href=\"form_modelo.php?modo=update&id_modelo=', id_modelo , '\"><img border=\"0\" src=\"imagens/editar.gif\"></a>') as id_modelo,";
+$query .= " CONCAT('<a title=\"Editar\" href=\"form_modelo.php?modo=update&id_modelo=', id_modelo , '\"><img border=\"0\" src=\"imagens/editar.gif\"></a>') as editar,";
 $query .= " CONCAT('<a title=\"Copiar\" href=\"form_modelo.php?modo=copiar&id_modelo=', id_modelo , '\"><img border=\"0\" src=\"imagens/copiar.gif\"></a>') as copiar,";
 $query .= "nome_modelo,";
 $query .= " CONCAT('<xmp>', LEFT(css_modelo,50) , '</xmp>') as css_modelo,";
 $query .= " CONCAT('<xmp>', LEFT(html_modelo,50) , '</xmp>') as html_modelo,";
-$query .= " CONCAT('<a href=\"javascript: apagar(', id_modelo , ');\"><img border=\"0\" src=\"imagens/lixeira.gif\"></a>')";
+$query .= " CONCAT('<a href=\"javascript: apagar(', id_modelo , ');\"><img border=\"0\" src=\"imagens/lixeira.gif\"></a>') as apagar";
 $query .= " from modelos ";
 
 if(!empty($busca)) {
 	if($organizar == "nome_modelo"){
-		$query .= " WHERE nome_modelo LIKE '%" . trim($busca) . "%'";
+		$query .= " WHERE nome_modelo LIKE '%" .  addslashes(trim($busca)) . "%'";
 		$string = "&busca=" .  $busca . "&organizar=nome_modelo";
 	}
 	if($organizar == "css_modelo"){
-		$query .= " WHERE css_modelo LIKE '%" . trim($busca) . "%'";
+		$query .= " WHERE css_modelo LIKE '%" .  addslashes(trim($busca)) . "%'";
 		$string = "&busca=" .  $busca . "&organizar=css_modelo";
 	}
 	if($organizar == "html_modelo"){
-		$query .= " WHERE html_modelo LIKE '%" . trim($busca) . "%'";
+		$query .= " WHERE html_modelo LIKE '%" .  addslashes(trim($busca)) . "%'";
 		$string = "&busca=" .  $busca . "&organizar=html_modelo";
 	}
 }
 
 $colunas[0]['largura'] = "3%";
 $colunas[0]['label'] = "&nbsp;";
-$colunas[0]['campo'] = "";
+$colunas[0]['campo'] = "editar";
 $colunas[0]['alinhamento'] = "left";
+$colunas[0]['ordena'] = false;
 
 $colunas[1]['largura'] = "5%";
 $colunas[1]['label'] = "&nbsp;";
-$colunas[1]['campo'] = "";
+$colunas[1]['campo'] = "copiar";
 $colunas[1]['alinhamento'] = "left";
+$colunas[1]['ordena'] = false;
 
 $colunas[2]['largura'] = "30%";
 $colunas[2]['label'] = 'Nome';
 $colunas[2]['campo'] .= 'nome_modelo';
 $colunas[2]['alinhamento'] = "left";
+$colunas[2]['ordena'] = true;
 
 $colunas[3]['largura'] = "25%";
 $colunas[3]['label'] = 'CSS';
 $colunas[3]['campo'] .= 'css_modelo';
 $colunas[3]['alinhamento'] = "left";
+$colunas[3]['ordena'] = true;
 
 $colunas[4]['largura'] = "30%";
 $colunas[4]['label'] = 'HTML';
 $colunas[4]['campo'] = 'html_modelo';
 $colunas[4]['alinhamento'] = "left";
+$colunas[4]['ordena'] = true;
 
 $colunas[5]['largura'] = "4%";
 $colunas[5]['label'] = "&nbsp;";
 $colunas[5]['campo'] = "";
 $colunas[5]['alinhamento'] = "right";
+$colunas[5]['ordena'] = false;
 ?>
 <script language="javascript">
 	function apagar(id){

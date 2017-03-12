@@ -17,6 +17,9 @@ $estado_instituicao = $_POST["estado_instituicao"];
 $cep_instituicao = $_POST["cep_instituicao"];
 
 if($modo == "apagar"){
+	$query = "DELETE FROM pessoas WHERE id_instituicao='" . $id_instituicao . "'";
+	$result = mysql_query($query) or tela_erro("Erro de conexão ao banco de dados: " . mysql_error());
+	
 	$query = "DELETE FROM instituicoes WHERE id_instituicao='" . $id_instituicao . "'";
 	$result = mysql_query($query) or tela_erro("Erro de conexão ao banco de dados: " . mysql_error());
 	
@@ -28,6 +31,18 @@ if($modo == "apagar"){
 	if($result) tela_ok($mensagem, $url);
 	die();
 }
+
+/////VERIFICA ANTES DE ADICIONAR SE ELA SERÁ ADICIONADA EM ALGUM SEGEMENTO
+$num_segmento = 0;
+foreach ($_POST as $chave => $valor){
+	if(substr($chave, 0, 9) == "segmento_"){
+		$numsegmento++;
+	}
+}
+if($numsegmento == 0) tela_erro("Selecione pelo menos um segmento de mercado.", false);
+
+
+
 
 if($modo == "add"){
 	$query = "SELECT nome_instituicao FROM instituicoes WHERE nome_instituicao='" . $nome_instituicao . "'";

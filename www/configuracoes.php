@@ -40,7 +40,7 @@ monta_titulo_secao("Opções de Configuração");
 			<? inicia_quadro_azul('width="100%"', "Re@cher WebMailer"); ?>
 			<div style="width: 100%; text-align:justify;">
 				<img align="absmiddle" src="imagens/info.gif">
-				&nbsp;Neste formulário é possivel alterar as configurações essenciais para o funcionamento do sistema.
+				&nbsp;Neste formul&aacute;rio &eacute; possivel alterar as configura&ccedil;&otilde;es essenciais para o funcionamento do sistema.
 			</div>
 			<? termina_quadro_azul(); ?>
 		</td>
@@ -114,11 +114,11 @@ monta_titulo_secao("Opções de Configuração");
 										<form onSubmit="return confirma_senha();" action="<?=$_SERVER['SCRIPT_NAME']?>" method="post">
 										<tr>
 											<td align="right" width="25%">Senha:</td>
-											<td><input type="password" name="senha" maxlength="8" class="input_text"></td>
+											<td><input type="password" name="senha" maxlength="30" class="input_text"></td>
 										</tr>
 										<tr>
 											<td align="right">Confirma Senha:</td>
-											<td><input type="password" name="confirma" maxlength="8" class="input_text"></td>
+											<td><input type="password" name="confirma" maxlength="30" class="input_text"></td>
 										</tr>
 										<tr>
 											<td></td>
@@ -149,7 +149,7 @@ monta_titulo_secao("Opções de Configuração");
 									</fieldset>
 									<br><br>
 									<fieldset>
-										<legend class="celula"><B>Endereço do Site</B></legend>
+										<legend class="celula"><B>Endere&ccedil;o do Site</B></legend>
 										<table width="100%" cellpadding="2" cellspacing="2">
 											<form onSubmit="return confirma_url_site();" action="<?=$_SERVER['SCRIPT_NAME']?>" method="post">
 											<tr>
@@ -223,7 +223,7 @@ monta_titulo_secao("Opções de Configuração");
 									</fieldset>
 									<br><br>
 									<fieldset>
-										<legend class="celula"><B>Assunto do email de Parabéns</B></legend>
+										<legend class="celula"><B>Assunto do email de Parab&eacute;ns</B></legend>
 										<table width="100%" cellpadding="2" cellspacing="2">
 											<form action="<?=$_SERVER['SCRIPT_NAME']?>" method="post">
 											<tr>

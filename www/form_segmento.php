@@ -27,6 +27,10 @@ monta_titulo_secao("Cadastro de Segmentos de Mercado");
 		}
 		return true;
 	}
+	function apagar(id){
+		if(confirm("Deseja remover este segmento do sistema?"))
+			window.location = 'salva_segmento.php?modo=apagar&pagina=<?=$_REQUEST["pagina"]?>&id_segmento=' + id + '<?=$string?>';
+	}
 </script>
 <table width="100%">
 	<tr>
@@ -34,7 +38,7 @@ monta_titulo_secao("Cadastro de Segmentos de Mercado");
 			<? inicia_quadro_azul('width="100%"', "Segmento"); ?>
 			<div style="width: 100%; text-align:justify;">
 				<img align="absmiddle" src="imagens/info.gif">
-				&nbsp;Segmentos de mercado representam os tipos de produtos oferecidos pela sua empresa. Sendo assim é possivel enviar emails direcionados para pessoas que tem interesse em determinados tipos de produtos.
+				&nbsp;Segmentos de mercado representam os tipos de produtos oferecidos pela sua empresa. Sendo assim &eacute; possivel enviar emails direcionados para pessoas que tem interesse em determinados tipos de produtos.
 			</div>
 			<? termina_quadro_azul(); ?>
 		</td>
@@ -50,7 +54,7 @@ monta_titulo_secao("Cadastro de Segmentos de Mercado");
 					<tr>
 						<td></td>
 						<td align="right"><?
-							if($modo == "update") echo('<input type="button" value="Apagar" class="botao_aqua" onclick="self.location=\'salva_pessoa.php?modo=apagar&id_pessoa=' . $id_pessoa . '\'">');
+							if($modo == "update") echo('<input type="button" value="Apagar" class="botao_aqua" onclick="apagar(' . $id_pessoa . ');">');
 							elseif ($modo == "add") echo('<input type="reset" value="Limpar Campos" class="botao_aqua">');
 							?>&nbsp;<input type="submit" value="Salvar" class="botao_aqua">
 						</td>

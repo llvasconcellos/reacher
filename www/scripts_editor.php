@@ -1,3 +1,4 @@
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <?
 $css = "body{margin: 0px;padding: 0px;background-color: #E2E2E2;font-family:Arial, Helvetica, sans-serif;font-size: 10px;}td{font-family:Arial, Helvetica, sans-serif;font-size:10px;}.menu_horizontal:link{font-family:Arial, Helvetica, sans-serif;color: #FFFFFF;font-weight: bold;text-decoration: none;}.menu_horizontal:visited{font-family:Arial, Helvetica, sans-serif;color: #FFFFFF;font-weight: bold;text-decoration: none;}.menu_horizontal:hover{font-family:Arial, Helvetica, sans-serif;color: #FFFFFF;font-weight: bold;text-decoration: none;}.menu_horizontal:active{font-family:Arial, Helvetica, sans-serif;color: #FFFFFF;font-weight: bold;text-decoration: none;}.trans_menu{filter: progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=80);}.input_text,select{background-color: #E9ECF6;font-family: Arial, Helvetica, sans-serif;	font-size: 10px;color: #000000;background-image:url('imagens/fundo_caixa_texto.gif');border: 1px solid #304D9D;	width: 100%;}.botao_aqua {font-family: Arial, Helvetica, sans-serif;font-size: 10px;color: #000000;background-image:url(imagens/funto_botao_aqua.gif);border: 1px solid #719CDC;font-weight: bold;height: 20;margin: 0px;padding: 0px;background-color: #B0CCF7;}.label{font-weight: bold;text-align: right;}.menu:link{font-family:Arial, Helvetica, sans-serif;color: #707376;font-weight: bold;text-decoration: none;}.menu:visited{font-family:Arial, Helvetica, sans-serif;color: #707376;font-weight: bold;text-decoration: none;}.menu:hover{font-family:Arial, Helvetica, sans-serif;color: #7073F8;font-weight: bold;text-decoration: none;}.menu:active{font-family:Arial, Helvetica, sans-serif;color: #707376;font-weight: bold;text-decoration: none;}";
 ?>
@@ -320,7 +321,7 @@ function _drawToolbar() {
 	for (var i = 0 ; i < aSizes.length; i++) {
 		sz	+=  ""
 		+   "<SPAN CLASS=tbButton ONKEYPRESS=\"if (event.keyCode==13) {" + aCommand[i] + ";event.keyCode=0}\" " + (aTips[i]=="" ? "" : ("TABINDEX=" + (i+1))) + " "
-		+	   "ID=\"tb" + aIds[i] + "\" "\""
+		+	   "ID=\"tb" + aIds[i] + "\" "\""\""\""\""\""\""
 		+	   "STYLE=\"width: " + aSizes[i] + ";height:" + iHeight
 		+	   "\""
 		+   ">" 
@@ -328,17 +329,17 @@ function _drawToolbar() {
 		+		   "STYLE=\""
 		+			   "position:absolute;"
 		+			   "width:" + aSizes[i] + ";height:" + iHeight + ";"
-		+			   "clip: rect(0 " + aSizes[i] + " "" + iHeight + " 0)"
+		+			   "clip: rect(0 " + aSizes[i] + " """"""" + iHeight + " 0)"
 		+		   "\""
 		+	   ">"
 		+		   "<IMG "
-		+			   "TITLE=\"" + aTips[i] + "\" "\""
+		+			   "TITLE=\"" + aTips[i] + "\" "\""\""\""\""\""\""
 		+			   "ONCLICK=\"" + aCommand[i] + "; event.cancelBubble=true\" "
-		+			   "ONMOUSEDOWN=\"if (event.button==1) this.style.pixelTop=-" + (iHeight*2) + "\" "\""
-		+			   "ONMOUSEOVER=\"this.style.pixelTop=-" + iHeight + "\" "\""
+		+			   "ONMOUSEDOWN=\"if (event.button==1) this.style.pixelTop=-" + (iHeight*2) + "\" "\""\""\""\""\""\""
+		+			   "ONMOUSEOVER=\"this.style.pixelTop=-" + iHeight + "\" "\""\""\""\""\""\""
 		+			   "ONMOUSEOUT=\"this.style.pixelTop=0\" "
-		+			   "ONMOUSEUP=\"this.style.pixelTop=-" + iHeight + "\" "\""
-		+			   "SRC=\"" + L_TOOLBARGIF_TEXT + "\" "\""
+		+			   "ONMOUSEUP=\"this.style.pixelTop=-" + iHeight + "\" "\""\""\""\""\""\""
+		+			   "SRC=\"" + L_TOOLBARGIF_TEXT + "\" "\""\""\""\""\""\""
 		+			   "STYLE=\"position:absolute;top:0;left:-" + iLeft + "\""
 		+		   ">"
 		+	   "</SPAN>"
@@ -1004,7 +1005,7 @@ function _CLinkPopupRenderer_PrepareHTML(){
 		+			   "</OPTION>"
 		for (var i = 0; i < g_state.aLinks.length; i++) {
 			sz  +=  ""
-			+   "<OPTION VALUE=\"" + g_state.aLinks[i][0] + "\" "\""
+			+   "<OPTION VALUE=\"" + g_state.aLinks[i][0] + "\" "\""\""\""\""\""\""
 			+	   (oEl && (g_state.aLinks[i][0]==oEl.href) ? "SELECTED" : "")
 			+   ">"
 			+	   g_state.aLinks[i][1]

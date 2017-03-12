@@ -7,7 +7,7 @@ if(empty($modo)) $modo = "add";
 if(($modo == "update") || ($modo == "copiar")){
 	$id_pessoa = trim($_GET["id_pessoa"]);
 	require("conectar_mysql.php");
-	$query = "SELECT id_pessoa, nome_pessoa, id_instituicao, telefone_pessoa, ramal_pessoa, email_pessoa, departamento_pessoa, DATE_FORMAT(dt_nascimento_pessoa,'%d/%m/%Y') as dt_nascimento_pessoa, recebe_email_pessoa FROM pessoas WHERE id_pessoa='" . $id_pessoa . "'";
+	$query = "SELECT id_pessoa, nome_pessoa, id_instituicao, telefone_pessoa, ramal_pessoa, celular_pessoa, email_pessoa, departamento_pessoa, DATE_FORMAT(dt_nascimento_pessoa,'%d/%m/%Y') as dt_nascimento_pessoa, recebe_email_pessoa, DATE_FORMAT(dt_nao_recebe_email,'%H:%i:%s&nbsp;hs&nbsp;-&nbsp;%d/%m/%Y') as dt_nao_recebe_email, motivo FROM pessoas WHERE id_pessoa='" . $id_pessoa . "'";
 	$result = mysql_query($query) or tela_erro("Erro de conexão ao banco de dados: " . mysql_error(), false);
 	$registro = mysql_fetch_assoc($result);
 	$id_pessoa = $registro["id_pessoa"];
@@ -15,10 +15,13 @@ if(($modo == "update") || ($modo == "copiar")){
 	$id_instituicao = $registro["id_instituicao"];
 	$telefone_pessoa = $registro["telefone_pessoa"];
 	$ramal_pessoa = $registro["ramal_pessoa"];
+	$celular_pessoa = $registro["celular_pessoa"];
 	$email_pessoa = $registro["email_pessoa"];
 	$departamento_pessoa = $registro["departamento_pessoa"];
 	$dt_nascimento_pessoa = $registro["dt_nascimento_pessoa"];
 	$recebe_email_pessoa = $registro["recebe_email_pessoa"];
+	$dt_nao_recebe_email = $registro["dt_nao_recebe_email"];
+	$motivo = $registro["motivo"];
 	require("desconectar_mysql.php");
 }
 elseif($modo == "pessoa_instituicao") $id_instituicao = $_GET["id_instituicao"];
@@ -64,6 +67,10 @@ monta_titulo_secao("Cadastro de Pessoas");
 	function editar_instituicao(id_instituicao){
 		window.location = "form_instituicao.php?modo=update&id_instituicao=" + id_instituicao;
 	}
+	function apagar(id){
+		if(confirm("Deseja remover esta pessoa do sistema?"))
+			window.location = 'salva_pessoa.php?modo=apagar&id_pessoa=' + id;
+	}
 </script>
 <table width="100%">
 	<tr>
@@ -71,7 +78,7 @@ monta_titulo_secao("Cadastro de Pessoas");
 			<? inicia_quadro_azul('width="100%"', "Pessoa"); ?>
 			<div style="width: 100%; text-align:justify;">
 				<img align="absmiddle" src="imagens/info.gif">
-				&nbsp;Neste formulário é possivel gravar informações de clientes finais ou contatos em empresas consumidoras dos produtos anunciados.
+				&nbsp;Neste formul&aacute;rio &eacute; possivel gravar informa&ccedil;&otilde;es de clientes finais ou contatos em empresas consumidoras dos produtos anunciados.
 				<hr>
 				<center>
 					<a title="Clique para adicionar uma nova pessoa nesta instituição" href="form_pessoa.php?modo=pessoa_instituicao&id_instituicao=<?=$id_instituicao?>">
@@ -95,10 +102,10 @@ monta_titulo_secao("Cadastro de Pessoas");
 			<center>
 				<table width="90%" border="0" cellspacing="3">
 					<tr>
-						<td class="label" width="30%">Instituição:</td>
+						<td class="label" width="30%">Institui&ccedil;&atilde;o:</td>
 						<td>
 							<select name="id_instituicao" onChange="if(this.value == 0){ mostra_segmentos(); document.getElementById('edit_inst').style.visibility = 'hidden'; } else{ esconde_segmentos(); document.getElementById('edit_inst').style.visibility = 'visible'; }">
-								<option value="0">Pessoa Física</option>
+								<option value="0">Pessoa F&iacute;sica</option>
 								<?php
 								$query = "SELECT id_instituicao, nome_instituicao FROM instituicoes ORDER BY nome_instituicao";
 								require("conectar_mysql.php");
@@ -121,7 +128,7 @@ monta_titulo_secao("Cadastro de Pessoas");
 					</tr>
 					<tr>
 						<td class="label">Telefone:</td>
-						<td><input type="text" name="telefone_pessoa" value="<?=$telefone_pessoa?>" maxlength="15" class="input_text"></td>
+						<td><input type="text" name="telefone_pessoa" value="<?=$telefone_pessoa?>" maxlength="20" class="input_text"></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -130,13 +137,18 @@ monta_titulo_secao("Cadastro de Pessoas");
 						<td></td>
 					</tr>
 					<tr>
+						<td class="label">Celular:</td>
+						<td><input type="text" name="celular_pessoa" value="<?=$celular_pessoa?>" maxlength="20" class="input_text"></td>
+						<td></td>
+					</tr>
+					<tr>
 						<td class="label">Email:</td>
-						<td><input type="text" name="email_pessoa" value="<?=$email_pessoa?>" maxlength="50" class="input_text"></td>
+						<td><input type="text" name="email_pessoa" value="<?=$email_pessoa?>" maxlength="255" class="input_text"></td>
 						<td></td>
 					</tr>
 					<tr>
 						<td class="label">Departamento:</td>
-						<td><input type="text" name="departamento_pessoa" value="<?=$departamento_pessoa?>" maxlength="30" class="input_text"></td>
+						<td><input type="text" name="departamento_pessoa" value="<?=$departamento_pessoa?>" maxlength="100" class="input_text"></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -154,13 +166,35 @@ monta_titulo_secao("Cadastro de Pessoas");
 										<td width="40%" class="label">Sim</td>
 										<td><input type="radio" name="recebe_email_pessoa" value="s"<? if(($recebe_email_pessoa == "s") || ($modo == "add") || ($modo == "pessoa_instituicao")) echo(" checked");?>></td>
 										<td width="10%">&nbsp;</td>
-										<td width="40%" class="label">Não</td>
+										<td width="40%" class="label">N&atilde;o</td>
 										<td><input type="radio" name="recebe_email_pessoa" value="n"<? if ($recebe_email_pessoa == "n") echo(" checked");?>></td>
 									</tr>
 								</table>
 							</fieldset>
 						</td>
 					</tr>
+					<? if ($recebe_email_pessoa == "n"){ ?>
+					<tr>
+						<td class="label"></td>
+						<td>
+							Data da Exclusão: <b style="color:#FF0000;"><?=$dt_nao_recebe_email?></b><br />
+							Motivo: <b style="color:#FF0000;"><?
+							switch($motivo){
+								case "1":
+									echo("Excluido pelo administrador.");
+									break;
+								case "2":
+									echo("Solicitado pelo usuário.");
+									break;
+								case "3":
+									echo("Email retornado como inválido.");
+									break;
+							}
+							?></b>
+						</td>
+						<td></td>
+					</tr>
+					<? } ?>
 				</table>
 			</center>
 			<? termina_quadro_branco(); ?>
@@ -206,7 +240,7 @@ monta_titulo_secao("Cadastro de Pessoas");
 			<table width="100%">
 				<tr>
 					<td align="right"><?
-							if($modo == "update") echo('<input type="button" value="Apagar" class="botao_aqua" onclick="self.location=\'salva_pessoa.php?modo=apagar&id_pessoa=' . $id_pessoa . '\'">');
+							if($modo == "update") echo('<input type="button" value="Apagar" class="botao_aqua" onclick="apagar(' . $id_pessoa . ');">');
 							elseif ($modo == "add") echo('<input type="reset" value="Limpar Campos" class="botao_aqua">');
 							?>&nbsp;<input type="submit" value="Salvar" class="botao_aqua">
 					</td>

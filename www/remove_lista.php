@@ -1,18 +1,18 @@
 <?
 require("funcoes.php");
 
-$nome_pessoa = trim(base64_decode($_REQUEST["p"]));
-$id_pessoa = trim($_REQUEST["id"]);
+$email_pessoa = trim($_REQUEST["id"]);
 
 require("conectar_mysql.php");
-$query = "UPDATE pessoas SET recebe_email_pessoa = 'n' WHERE id_pessoa=" . $id_pessoa . " AND nome_pessoa='" . $nome_pessoa . "'";
-$result = mysql_query($query) or tela_erro("Erro de conexão ao banco de dados: " . mysql_error(), false);
+$query = "UPDATE pessoas SET recebe_email_pessoa = 'n', dt_nao_recebe_email = NOW(), motivo=2 WHERE email_pessoa='" . $email_pessoa . "'";
+$result = mysql_query($query) or tela_erro("Erro de conexÃ£o ao banco de dados: " . mysql_error(), false);
 require("desconectar_mysql.php");
 
 ?>
 <html>
 	<head>
-		<title>Obriado pela sua atenção!</title>
+		<title>Obriado pela sua atenÃ§Ã£o!</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<link href="estilo.css" rel="stylesheet" rev="stylesheet">
 	</head>
 	<body style="background-color: #FFFFFF"><br><br><br><br><br><br><br><br><center>
@@ -22,7 +22,7 @@ inicia_quadro_branco('width="500"', 'Sucesso!'); ?>
 		<tr>
 			<td><img src="imagens/ok.jpg"></td>
 			<td>
-				Você foi removido da nossa lista de emails. Obrigado por utilizar nosso serviço!
+				VocÃª foi removido da nossa lista de emails. Obrigado por utilizar nosso serviÃ§o!
 			</td>
 		</tr>
 		<tr>

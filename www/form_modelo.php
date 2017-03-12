@@ -12,6 +12,8 @@ if(($modo == "update") || ($modo == "copiar")){
 	$nome_modelo = $registro["nome_modelo"];
 	$css_modelo = stripslashes($registro["css_modelo"]);
 	$html_modelo = stripslashes($registro["html_modelo"]);
+	$css = "modelo";
+	$id = $id_modelo;
 	require("desconectar_mysql.php");
 }
 
@@ -29,8 +31,7 @@ monta_titulo_secao("Cadastro de Modelo de Mala Direta");
 							alert("Informe um nome para o modelo.");
 							return false;
 						}
-						if (!editor.cbMode.checked) f.html_modelo.value = editor.idEditbox.document.body.innerHTML;
-						else f.html_modelo.value = editor.idEditbox.document.body.innerText;
+						f.html_modelo.value = oEdit1.getHTMLBody();
 						return true;
 					}
 					function aplicar_estilo(){
@@ -56,6 +57,10 @@ monta_titulo_secao("Cadastro de Modelo de Mala Direta");
 						if(d.style.visibility == "hidden") s.src = "imagens/seta_verde_direita.gif";
 						else s.src = "imagens/seta_verde_baixo.gif";
 					}
+					function apagar(id){
+						if(confirm("Deseja remover este modelo do sistema?"))
+							window.location = 'salva_modelo.php?modo=apagar&id_modelo=' + id;
+					}
 				</script>
 				<table width="98%" cellpadding="2" cellspacing="2" border="0">
 					<form action="salva_modelo.php" method="post" onSubmit="return valida_form();">
@@ -71,7 +76,7 @@ monta_titulo_secao("Cadastro de Modelo de Mala Direta");
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2" class="label" style="text-align: left;"><a href="Javascript: edita_css();"><img border="0" id="seta_verde" align="absmiddle" src="imagens/seta_verde_direita.gif"></a>Regras de Estilo CSS</td>
+						<td colspan="2" class="label" style="text-align: left;"><a href="Javascript: edita_css();" class="menu" style="color:#000000;"><img border="0" id="seta_verde" align="absmiddle" src="imagens/seta_verde_direita.gif">Regras de Estilo CSS</a></td>
 					</tr>
 					<tr>
 						<td colspan="2" align="right">
@@ -95,7 +100,12 @@ monta_titulo_secao("Cadastro de Modelo de Mala Direta");
 						<td colspan="2" class="label" style="text-align: left;">Editor HTML Online</td>
 					</tr>
 					<tr>
-						<td colspan="2"><iframe width="100%" height="400" src="../editor.php?var=html_modelo" name="editor" id="editor"></iframe></td>
+						<td colspan="2">
+						<?
+						require("editor.php");
+						$editor = new editorHTML($html_modelo, "100%", "400px", "dincss.php?oque=" . $css . "&id=" . $id);
+						?>
+						</td>
 					</tr>
 				</table>
 			<? termina_quadro_branco(); ?>
@@ -106,7 +116,7 @@ monta_titulo_secao("Cadastro de Modelo de Mala Direta");
 					<td align="right"><?
 						if($modo == "update"){
 							echo('<input type="button" value="Pré-Visualizar" class="botao_aqua" onClick="window.open(\'previsualizar.php?tipo=modelo&id=' . $id_modelo . '\');">&nbsp;');
-							echo('<input type="button" value="Apagar" class="botao_aqua" onclick="self.location=\'salva_instituicao.php?modo=apagar&id_instituicao=' . $id_instituicao . '\'">');
+							echo('<input type="button" value="Apagar" class="botao_aqua" onclick="apagar(' . $id_modelo . ');">');
 						}
 						elseif ($modo == "add") echo('<input type="reset" value="Limpar Campos" class="botao_aqua">');
 						?>&nbsp;<input type="submit" value="Salvar" class="botao_aqua">
@@ -123,33 +133,30 @@ monta_titulo_secao("Cadastro de Modelo de Mala Direta");
 			<? inicia_quadro_azul('width="100%"', "Ajuda"); ?>
 			<div style="width: 100%; text-align:justify;">
 				<img align="absmiddle" src="imagens/info.gif">
-				&nbsp;Os modelos de mala direta são documentos HTML em conjunto com regras de estilo css que servem de base para a criação e envio da mala direta. Aqui é criado o layout gráfico e inseridas as imagens que vão constituir a mala direta em si.
+				&nbsp;Os modelos de mala direta s&atilde;o documentos HTML em conjunto com regras de estilo css que servem de base para a cria&ccedil;&atilde;o e envio da mala direta. Aqui &eacute; criado o layout gr&aacute;fico e inseridas as imagens que v&atilde;o constituir a mala direta em si.
 				Estes documentos HTML podem ser criados em algum editor html externo ou direto no editor de HTML Online.
 				<hr>
 				<img align="absmiddle" src="imagens/info.gif">
-				&nbsp;Estilos CSS são regras para alterar a aparência dos elementos HTML padrão como links, tabelas, parágrafos e o corpo do documento. Estas regras estão descritas dentro da TAG &lt;style&gt;&lt;/style&gt;.
+				&nbsp;Estilos CSS s&atilde;o regras para alterar a apar&ecirc;ncia dos elementos HTML padr&atilde;o como links, tabelas, par&aacute;grafos e o corpo do documento. Estas regras est&atilde;o descritas dentro da TAG &lt;style&gt;&lt;/style&gt;.
 				<hr>
 				<img align="absmiddle" src="imagens/atencao.gif">
-				&nbsp;Para ser possível o envio de emails personalizados, com o nome do destinatário, será necessário a inclusão da palavra chave <font color="#FF0000">(*nome*)</font> dentro do corpo da mensagem toda a vez que desejar se referir ao nome do destinatário. O sistema então, automaticamente, substituirá o a palavra chave pelo nome de cada destinatário do email.
+				&nbsp;Para ser poss&iacute;vel o envio de emails personalizados, com o nome do destinat&aacute;rio, ser&aacute; necess&aacute;rio a inclus&atilde;o da palavra chave <font color="#FF0000">(*nome*)</font> dentro do corpo da mensagem toda a vez que desejar se referir ao nome do destinat&aacute;rio. O sistema ent&atilde;o, automaticamente, substituir&aacute; o a palavra chave pelo nome de cada destinat&aacute;rio do email.
 				<hr>
 				<img align="absmiddle" src="imagens/atencao.gif">
-				&nbsp;Para escolher onde será criada a tabela dinâmica de oferecimento de outras familias de produtos deve-se incluir no texto a palavra chave <font color="#FF0000">(*dispomos_tambem*)</font>.
-				<hr>
-				<img align="absmiddle" src="imagens/atencao.gif">
-				&nbsp;<font color="#FF0000"><b>Atenção:</b></font> Para o campo de Estilos CSS devem ser inseridos apenas os códigos dentro da tag &lt;style&gt;&lt;/style&gt; não devendo ser inserida a tag em si. Já para o campo de editor HTML online, devem ser inseridos os códigos dentro da tag &lt;body&gt;&lt;/body&gt;.
+				&nbsp;<font color="#FF0000"><b>Aten&ccedil;&atilde;o:</b></font> Para o campo de Estilos CSS devem ser inseridos apenas os c&oacute;digos dentro da tag &lt;style&gt;&lt;/style&gt; n&atilde;o devendo ser inserida a tag em si. J&aacute; para o campo de editor HTML online, devem ser inseridos os c&oacute;digos dentro da tag &lt;body&gt;&lt;/body&gt;.
 			</div>
 			<? termina_quadro_azul(); ?>
 		</td>
 	</tr>
 </table>
 <script language="javascript">
-	var i = setInterval(espera, 1000);	
+	/*var i = setInterval(espera, 1000);	
 	function espera(){
 		if(self.editor.document.readyState == "complete"){
 			aplicar_estilo();
 			clearInterval(i);
 		}
-	}
+	}*/
 	document.forms[0].elements[0].focus();
 </script>
 <? termina_pagina(); ?>

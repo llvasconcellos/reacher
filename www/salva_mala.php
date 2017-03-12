@@ -12,6 +12,7 @@ $css_mala = addslashes(rawurldecode($_REQUEST["css_mala"]));
 $html_mala = addslashes($_REQUEST["html_mala"]);
 $data_mala = $_REQUEST["data_mala"];
 $status_mala = $_REQUEST["status_mala"];
+$remetente_mala = $_REQUEST["remetente_mala"];
 
 if(empty($data_mala)) $data_mala = "NULL";
 else{
@@ -24,6 +25,12 @@ if($modo == "apagar"){
 	$result = mysql_query($query) or tela_erro("Erro de conexão ao banco de dados: " . mysql_error());
 	
 	$query = "DELETE FROM segmentos_malas WHERE id_mala=" . $id_mala;
+	$result = mysql_query($query) or tela_erro("Erro ao atualizar registros no Banco de dados: " . mysql_error(), false);
+	
+	$query = "DELETE FROM malas_envios WHERE id_mala=" . $id_mala;
+	$result = mysql_query($query) or tela_erro("Erro ao atualizar registros no Banco de dados: " . mysql_error(), false);
+	
+	$query = "DELETE FROM malas_visualizacoes WHERE id_mala=" . $id_mala;
 	$result = mysql_query($query) or tela_erro("Erro ao atualizar registros no Banco de dados: " . mysql_error(), false);
 	
 	$mensagem = "Mala direta removida com sucesso!";
@@ -43,12 +50,13 @@ if($modo == "alterar_status"){
 }
 
 if($modo == "add"){
-	$query = "INSERT INTO malas (nome_mala, assunto_mala, css_mala, html_mala, data_mala) VALUES ";
+	$query = "INSERT INTO malas (nome_mala, assunto_mala, css_mala, html_mala, data_mala, remetente_mala) VALUES ";
 	$query .= "('" . $nome_mala . "', ";
 	$query .= "'" . $assunto_mala . "', ";
 	$query .= "'" . $css_mala . "', ";
 	$query .= "'" . $html_mala . "', ";
-	$query .= $data_mala . ")";
+	$query .= $data_mala . ",";
+	$query .= "'" . $remetente_mala . "')";
 	$result = mysql_query($query) or tela_erro("Erro ao atualizar registros no Banco de dados: " . mysql_error(), false);
 	$result = mysql_query("SELECT LAST_INSERT_ID();") or tela_erro("Erro ao atualizar registros no Banco de dados: " . mysql_error(), false);
 	$registro = mysql_fetch_row($result);
@@ -72,6 +80,7 @@ if($modo == "update"){
 	$query .= "css_mala='" . $css_mala . "', ";
 	$query .= "html_mala='" . $html_mala . "', ";
 	$query .= "status_mala='" . $status_mala . "', ";
+	$query .= "remetente_mala='" . $remetente_mala . "', ";
 	$query .= "data_mala=" . $data_mala;
 	$query .= " WHERE id_mala='" . $id_mala . "'";
 	$mensagem = "Informações alteradas com sucesso!";

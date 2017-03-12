@@ -33,6 +33,10 @@ monta_titulo_secao("Cadastro de Instituições");
 		}
 		return true;
 	}
+	function apagar_instituicao(id){
+		if(confirm("Deseja remover esta instituição do sistema?"))
+			window.location = 'salva_instituicao.php?modo=apagar&id_instituicao=' + id;
+	}
 </script>
 <table width="100%">
 	<tr>
@@ -40,7 +44,7 @@ monta_titulo_secao("Cadastro de Instituições");
 			<? inicia_quadro_azul('width="100%"', "Instituição"); ?>
 			<div style="width: 100%; text-align:justify;">
 				<img align="absmiddle" src="imagens/info.gif">
-				&nbsp;Instituições são empresas ou qualquer tipo de organizações que dentro do sistema tem o propósito de servir de recipiente para agrupar vários contatos e selecionar seus respectivos segmentos de mercado de interesse.
+				&nbsp;Institui&ccedil;&otilde;es s&atilde;o empresas ou qualquer tipo de organiza&ccedil;&otilde;es que dentro do sistema tem o prop&oacute;sito de servir de recipiente para agrupar v&aacute;rios contatos e selecionar seus respectivos segmentos de mercado de interesse.
 				<?
 				if($modo == "update"){ ?>
 					<hr>
@@ -71,7 +75,7 @@ monta_titulo_secao("Cadastro de Instituições");
 						<td><input type="text" name="nome_instituicao" value="<?=$nome_instituicao?>" maxlength="50" class="input_text"></td>
 					</tr>
 					<tr>
-						<td class="label">Razão Social:</td>
+						<td class="label">Raz&atilde;o Social:</td>
 						<td><input type="text" name="razao_social_instituicao" value="<?=$razao_social_instituicao?>" maxlength="50" class="input_text"></td>
 					</tr>
 					<tr>
@@ -85,10 +89,10 @@ monta_titulo_secao("Cadastro de Instituições");
 					<tr>
 						<td colspan="2">
 							<fieldset>
-								<legend><b>Endereço</b></legend>
+								<legend><b>Endere&ccedil;o</b></legend>
 								<table width="100%" cellspacing="3">
 									<tr>
-										<td width="21%" align="right">Endereço:</td>
+										<td width="21%" align="right">Endere&ccedil;o:</td>
 										<td><input type="text" name="endereco_instituicao" value="<?=$endereco_instituicao?>" maxlength="100" class="input_text"></td>
 									</tr>
 									<tr>
@@ -159,7 +163,7 @@ monta_titulo_secao("Cadastro de Instituições");
 			<table width="100%">
 				<tr>
 					<td align="right"><?
-						if($modo == "update") echo('<input type="button" value="Apagar" class="botao_aqua" onclick="self.location=\'salva_instituicao.php?modo=apagar&id_instituicao=' . $id_instituicao . '\'">');
+						if($modo == "update") echo('<input type="button" value="Apagar" class="botao_aqua" onclick="apagar_instituicao(' . $id_instituicao . ');">');
 						elseif ($modo == "add") echo('<input type="reset" value="Limpar Campos" class="botao_aqua">');
 						?>&nbsp;<input type="submit" value="Salvar" class="botao_aqua">
 					</td>
@@ -182,55 +186,68 @@ function browser_pessoas(){
 	global $id_instituicao;
 	
 	$query = "SELECT ";
-	$query .= " CONCAT('<a title=\"Editar\" href=\"form_pessoa.php?modo=update&id_pessoa=', id_pessoa , '\"><img border=\"0\" src=\"imagens/editar.gif\"></a>') as id_pessoa,";
+	$query .= " CONCAT('<a title=\"Editar\" href=\"form_pessoa.php?modo=update&id_pessoa=', id_pessoa , '\"><img border=\"0\" src=\"imagens/editar.gif\"></a>') as editar,";
 	$query .= " CONCAT('<a title=\"Copiar\" href=\"form_pessoa.php?modo=copiar&id_pessoa=', id_pessoa , '\"><img border=\"0\" src=\"imagens/copiar.gif\"></a>') as copiar,";
 	$query .= "nome_pessoa, email_pessoa, DATE_FORMAT(dt_nascimento_pessoa,'%d/%m/%Y') as dt_nascimento_pessoa, ";
 	$query .= " CASE recebe_email_pessoa WHEN 'n' THEN '<img border=\"0\" title=\"Mala Direta agendada para envio\" src=\"imagens/icone_email_agendado.gif\">' WHEN 's' THEN '<img border=\"0\" title=\"Mala Direta enviada\" src=\"imagens/icone_email_enviado.gif\">' END as recebe_email_pessoa, ";
-	$query .= "CONCAT('<a href=\"javascript: apagar(', id_pessoa , ');\"><img border=\"0\" src=\"imagens/lixeira.gif\"></a>')";
+	$query .= "CONCAT('<a href=\"javascript: apagar(', id_pessoa , ');\"><img border=\"0\" src=\"imagens/lixeira.gif\"></a>') as apagar";
 	$query .= " from pessoas p LEFT OUTER JOIN instituicoes i ON i.id_instituicao = p.id_instituicao WHERE p.id_instituicao=" . $id_instituicao;
 	
 	$colunas[0]['largura'] = "3%";
 	$colunas[0]['label'] = "&nbsp;";
-	$colunas[0]['campo'] = "";
+	$colunas[0]['campo'] = "editar";
 	$colunas[0]['alinhamento'] = "left";
+	$colunas[0]['ordena'] = false;
 	
 	$colunas[1]['largura'] = "5%";
 	$colunas[1]['label'] = "&nbsp;";
-	$colunas[1]['campo'] = "";
+	$colunas[1]['campo'] = "copiar";
 	$colunas[1]['alinhamento'] = "left";
+	$colunas[1]['ordena'] = false;
 	
 	$colunas[2]['largura'] = "25%";
 	$colunas[2]['label'] = 'Nome';
 	$colunas[2]['campo'] .= 'nome_pessoa';
 	$colunas[2]['alinhamento'] = "left";
+	$colunas[2]['ordena'] = true;
 	
 	$colunas[3]['largura'] = "20%";
 	$colunas[3]['label'] = 'Email';
 	$colunas[3]['campo'] = 'email_pessoa';
 	$colunas[3]['alinhamento'] = "left";
+	$colunas[3]['ordena'] = true;
 	
 	$colunas[4]['largura'] = "16%";
 	$colunas[4]['label'] = 'Data&nbsp;Nascimento';
 	$colunas[4]['campo'] = "dt_nascimento_pessoa";
 	$colunas[4]['alinhamento'] = "center";
+	$colunas[4]['ordena'] = true;
 	
 	$colunas[5]['largura'] = "4%";
 	$colunas[5]['label'] = "Email?";
 	$colunas[5]['campo'] = "recebe_email_pessoa";
 	$colunas[5]['alinhamento'] = "right";
+	$colunas[5]['ordena'] = true;
 	
 	$colunas[6]['largura'] = "4%";
 	$colunas[6]['label'] = "&nbsp;";
-	$colunas[6]['campo'] = "";
+	$colunas[6]['campo'] = "apagar";
 	$colunas[6]['alinhamento'] = "right";
+	$colunas[6]['ordena'] = false;
 	?>
 	<script language="javascript">
 		function apagar(id){
-			if(confirm("Deseja remover esta pessoa do sistema?"))
-				window.location = 'salva_pessoa.php?modo=apagar&pagina=<?=$_REQUEST["pagina"]?>&id_pessoa=' + id + '<?=$string?>';
+			var url = 'salva_pessoa.php?modo=apagar&id_pessoa=' + id;
+			if(confirm("Deseja remover esta pessoa do sistema?")){
+				var a = document.createElement('a');
+				a.style.display = "none";
+				a.setAttribute("href", url);
+				document.body.appendChild(a);
+				if(!a.click) window.location = url;
+				else a.click();
+			}
 		}
 	</script>
-	
 	<?
 	browser($query, $colunas, $_SERVER['QUERY_STRING'], 'Contatos nesta Instituição', 9999999, 2, false);
 }
